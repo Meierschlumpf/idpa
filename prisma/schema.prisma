@@ -14,10 +14,46 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Example {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Subject {
+  id                String @id @default(cuid())
+  name              String
+  routeName         String
+  icon              String
+  classSubject      ClassSubject[]
+}
+
+model Lesson {
+  id                String @id @default(cuid())
+  start             DateTime
+  end               DateTime
+  day               Int
+  classSubjectId    String
+  classSubject      ClassSubject @relation(fields: [classSubjectId], references: [id], onDelete: Cascade)
+}
+
+model ClassSubject {
+  id                String @id @default(cuid())
+  subjectId         String
+  classId           String
+  subject           Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  class             Class @relation(fields: [classId], references: [id], onDelete: Cascade)
+  lessons           Lesson[]
+  students          Student[]
+}
+
+model Class {
+  id                String @id @default(cuid())
+  name              String
+  subjects          ClassSubject[]
+  students          Student[]
+}
+
+model Student {
+  id                String @id @default(cuid())
+  accountId         String @unique
+  account           Account @relation(fields: [accountId], references: [id])
+  classes           Class[]
+  classSubjects     ClassSubject[]
 }
 
 // Necessary for Next auth
@@ -35,6 +71,7 @@ model Account {
   id_token          String? // @db.Text
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  student           Student?
 
   @@unique([provider, providerAccountId])
 }
