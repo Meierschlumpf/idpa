@@ -242,6 +242,14 @@
     "@radix-ui/react-scroll-area" "1.0.0"
     react-textarea-autosize "8.3.4"
 
+"@mantine/form@^5.6.1":
+  version "5.6.1"
+  resolved "https://registry.yarnpkg.com/@mantine/form/-/form-5.6.1.tgz#b62f994cd73d4d5156d8b1658034af34cb4157fb"
+  integrity sha512-MXUAqYrqJqQxfsHeFRQGsv60ml9f+kydIxbA+SB8bS4uOxa+1eFeh8aeOPdT+n+D9u56OZGoQpXyjzL0h0xHgQ==
+  dependencies:
+    fast-deep-equal "^3.1.3"
+    klona "^2.0.5"
+
 "@mantine/hooks@^5.6.0":
   version "5.6.0"
   resolved "https://registry.yarnpkg.com/@mantine/hooks/-/hooks-5.6.0.tgz#4517a8d031b8004a04b6a99e7d091a7eea259c98"
@@ -1835,6 +1843,11 @@ json5@^1.0.1:
     array-includes "^3.1.5"
     object.assign "^4.1.3"
 
+klona@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/klona/-/klona-2.0.5.tgz#d166574d90076395d9963aa7a928fabb8d76afbc"
+  integrity sha512-pJiBpiXMbt7dkzXe8Ghj/u4FfXOOa98fPW+bihOJ4SjnoijweJrNThJfd3ifXpXhREjpoF2mZVH1GfS9LV3kHQ==
+
 language-subtag-registry@~0.3.2:
   version "0.3.22"
   resolved "https://registry.yarnpkg.com/language-subtag-registry/-/language-subtag-registry-0.3.22.tgz#2e1500861b2e457eba7e7ae86877cbd08fa1fd1d"
@@ -2222,6 +2235,23 @@ queue-microtask@^1.2.2:
   resolved "https://registry.yarnpkg.com/queue-microtask/-/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
 
+ramda-fantasy@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/ramda-fantasy/-/ramda-fantasy-0.8.0.tgz#9e8c37d93ec0a70796cfc10873dd9c50850390f6"
+  integrity sha512-ZA1LVjy2wfCrlAsTJghBc9OxB4U14KTReDzuKJPeQ8aeWm+mRFw+8O0aUD4bibOKHzj5it/GkQcXVbzXmjFcpg==
+  dependencies:
+    ramda ">=0.15.0"
+
+ramda@>=0.15.0:
+  version "0.28.0"
+  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.28.0.tgz#acd785690100337e8b063cab3470019be427cc97"
+  integrity sha512-9QnLuG/kPVgWvMQ4aODhsBUFKOUmnbUnsSXACv+NCQZcHbeb+v8Lodp8OVxtRULN1/xOyYLLaL6npE6dMq5QTA==
+
+ramda@^0.27.2:
+  version "0.27.2"
+  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.27.2.tgz#84463226f7f36dc33592f6f4ed6374c48306c3f1"
+  integrity sha512-SbiLPU40JuJniHexQSAgad32hfwd+DRUdwF2PlVuI5RZD0/vahUco7R8vD86J/tcEKKF9vZrUVwgtmGCqlCKyA==
+
 react-dom@18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.2.0.tgz#22aaf38708db2674ed9ada224ca4aa708d821e3d"
@@ -2337,6 +2367,14 @@ rimraf@^3.0.2:
   integrity sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==
   dependencies:
     glob "^7.1.3"
+
+roman-numbers@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/roman-numbers/-/roman-numbers-1.0.2.tgz#54ba39c91247b1a5cc013e7b3677be97207284d3"
+  integrity sha512-og7DI3Jh/LT9tagbahbqwonvUs6Gru5TS+FVJlPq6UfQScZUDW/Iwm2M0qXQZNdMACX356+WUzcRrF8KW01j4w==
+  dependencies:
+    ramda "^0.27.2"
+    ramda-fantasy "^0.8.0"
 
 run-parallel@^1.1.9:
   version "1.2.0"
