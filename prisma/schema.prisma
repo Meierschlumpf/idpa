@@ -70,6 +70,7 @@ model Account {
   scope             String?
   id_token          String? // @db.Text
   session_state     String?
+  is_super_user     Boolean @default(false)
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   student           Student?
 

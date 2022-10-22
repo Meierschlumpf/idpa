@@ -1,21 +1,16 @@
 import { Anchor, createStyles, Divider, Group, SimpleGrid, Text, useMantineTheme } from "@mantine/core";
 import { ReactNode } from "react";
-import { trpc } from "../../../../utils/trpc";
-import { DropdownSublink } from "./sublink";
 
 interface HeaderDropdownWrapperProps {
 	title: string;
 	href: string;
-	closePopover: () => void;
 	children: ReactNode;
+	footer: ReactNode;
 }
 
-export const HeaderDropdownWrapper = ({ title, href, closePopover, children }: HeaderDropdownWrapperProps) => {
+export const HeaderDropdownWrapper = ({ title, href, children, footer }: HeaderDropdownWrapperProps) => {
 	const { classes } = useStyles();
 	const theme = useMantineTheme();
-	const { data } = trpc.subject.getHoverCard.useQuery();
-
-	if (!data) return <div></div>
 
 	return <>
 		<Group position="apart" px="md">
@@ -32,11 +27,11 @@ export const HeaderDropdownWrapper = ({ title, href, closePopover, children }: H
 		/>
 
 		<SimpleGrid cols={2} spacing={0}>
-			{data?.map(item => <DropdownSublink key={item.id} item={item} closePopover={closePopover} />)}
+			{children}
 		</SimpleGrid>
 
 		<div className={classes.dropdownFooter}>
-			{children}
+			{footer}
 		</div></>
 }
 

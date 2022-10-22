@@ -2,11 +2,12 @@ import {
 	Box, Group, Header, Text
 } from '@mantine/core';
 import { IconSchool } from '@tabler/icons';
-import { useSession } from 'next-auth/react';
-import { HeaderDropdown } from './header/dropdown';
-import { HeaderLink } from './header/link';
+import { trpc } from '../../utils/trpc';
 import { UserLoginButton } from './header/user/login';
 import { UserProfileButton } from './header/user/profile';
+import { AdminHeaderNavigation } from './header/variant/admin';
+import { StudentHeaderNavigation } from './header/variant/student';
+import { TeacherHeaderNavigation } from './header/variant/teacher';
 
 interface BasicHeaderProps {
 	navbarOpened: boolean;
@@ -14,7 +15,8 @@ interface BasicHeaderProps {
 }
 
 export const BasicHeader = ({ navbarOpened, toggleNavbar }: BasicHeaderProps) => {
-	const { data } = useSession();
+	const { data } = trpc.auth.getSession.useQuery();
+
 	return (
 		<Box pb={60}>
 			<Header height={60} px="md">
@@ -25,8 +27,7 @@ export const BasicHeader = ({ navbarOpened, toggleNavbar }: BasicHeaderProps) =>
 					</Group>
 
 					<Group sx={{ height: '100%' }} spacing={0}>
-						<HeaderLink label='Startseite' href='#' />
-						<HeaderDropdown label="Semesterplan" href="#" footer={<div></div>} />
+						{data?.user?.role === 'admin' ? <AdminHeaderNavigation /> : data?.user?.role === 'student' ? <StudentHeaderNavigation /> : <TeacherHeaderNavigation />}
 					</Group>
 
 					<Group>

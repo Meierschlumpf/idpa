@@ -3,6 +3,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { NextLink } from "@mantine/next";
 import { IconChevronDown } from "@tabler/icons";
 import { ReactNode } from "react";
+import { HeaderPopoverProvider } from "../../../contexts/header-popover.context";
 import { useDelayedHover } from "../../../hooks/use-delayed-hover";
 import { HeaderDropdownWrapper } from "./dropdown/wrapper";
 
@@ -10,9 +11,10 @@ interface HeaderDropdownProps {
 	label: string;
 	href: string;
 	footer: ReactNode;
+	children: ReactNode;
 }
 
-export const HeaderDropdown = ({ label, href, footer }: HeaderDropdownProps) => {
+export const HeaderDropdown = ({ label, href, footer, children }: HeaderDropdownProps) => {
 	const { classes } = useStyles();
 	const theme = useMantineTheme();
 
@@ -32,8 +34,10 @@ export const HeaderDropdown = ({ label, href, footer }: HeaderDropdownProps) => 
 		</Popover.Target>
 
 		<Popover.Dropdown onMouseEnter={openDropdown} onMouseLeave={closeDropdown} sx={{ overflow: 'hidden' }}>
-			<HeaderDropdownWrapper title={label} href={href} closePopover={close}>
-				{footer}
+			<HeaderDropdownWrapper title={label} href={href} footer={footer}>
+				<HeaderPopoverProvider closePopover={close}>
+					{children}
+				</HeaderPopoverProvider>
 			</HeaderDropdownWrapper>
 
 		</Popover.Dropdown>
