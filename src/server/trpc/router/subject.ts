@@ -1,4 +1,5 @@
-import { router, protectedProcedure } from "../trpc";
+import { Class, Subject } from "@prisma/client";
+import { protectedProcedure, router } from "../trpc";
 
 export const subjectRouter = router({
   getHoverCard: protectedProcedure
@@ -55,5 +56,64 @@ export const subjectRouter = router({
       if (firstALesson.day <= firstBLesson.day && firstALesson.start < firstBLesson.start) return -1
       return 1;
     })
+  }),
+  getSidebar: protectedProcedure
+  .query(async ({ctx}) => {
+    const student = await ctx.prisma.student.findFirst({
+      include: {
+       account: true,
+       classes: {
+        include: {
+          subjects: {
+            include: {
+              subject: true
+            }
+          }
+        }
+       },
+       classSubjects: {
+        include: {
+          subject: true,
+          class: true
+        }
+       }
+      },
+      where: {
+        account: {
+          userId: ctx.session.user.id
+        }
+      }
+    });
+
+    const classSubjectClasses = student?.classSubjects.reduce((previous: (Class & {
+      subjects: Subject[];
+  })[], current) => {
+    if (!previous.some(c => c.id === current.classId)) {
+      previous.push({
+        ...current.class,
+        subjects: [current.subject]
+      });
+    return previous;
+    }
+    
+    const currentClass = previous.find(c => c.id === current.classId);
+    return currentClass ? [
+      ...previous.filter(c => c.id !== current.class.id),
+      {
+        ...currentClass,
+        subjects: [...currentClass?.subjects ?? [], current.subject]
+      }
+    ] : previous;
+  }, [])
+    
+    const classes = [
+      ...student?.classes.map(c => ({
+        ...c,
+        subjects: c.subjects.map(s => s.subject)
+      })) ?? [],
+      ...classSubjectClasses ?? []
+    ]
+
+    return classes.sort((a, b) => a.name.localeCompare(b.name))
   }),
 });

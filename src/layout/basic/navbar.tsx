@@ -1,11 +1,13 @@
-import { Navbar, Text } from "@mantine/core"
+import { Navbar } from "@mantine/core";
+import { ReactNode } from "react";
 
 interface BasicNavbarProps {
 	opened: boolean;
+	children: ReactNode;
 }
 
-export const BasicNavbar = ({ opened }: BasicNavbarProps) => {
+export const BasicNavbar = ({ opened, children }: BasicNavbarProps) => {
 	return <Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{ sm: 200, lg: 300 }}>
-		<Text>Application navbar</Text>
+		{children}
 	</Navbar>
 }

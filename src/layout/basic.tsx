@@ -9,9 +9,10 @@ import { BasicNavbar } from './basic/navbar';
 
 interface BasicLayoutProps {
 	children: ReactNode;
+	sidebarContent?: ReactNode;
 }
 
-export const BasicLayout = ({ children }: BasicLayoutProps) => {
+export const BasicLayout = ({ children, sidebarContent }: BasicLayoutProps) => {
 	const theme = useMantineTheme();
 	const [navbarOpened, toggleNavbar] = useToggle();
 
@@ -23,8 +24,7 @@ export const BasicLayout = ({ children }: BasicLayoutProps) => {
 				},
 			}}
 			navbarOffsetBreakpoint="sm"
-			asideOffsetBreakpoint="sm"
-			navbar={<BasicNavbar opened={navbarOpened} />}
+			navbar={sidebarContent ? <BasicNavbar opened={navbarOpened}>{sidebarContent}</BasicNavbar> : undefined}
 			footer={<BasicFooter />}
 			header={<BasicHeader navbarOpened={navbarOpened} toggleNavbar={toggleNavbar} />}
 		>
