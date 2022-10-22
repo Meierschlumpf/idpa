@@ -1,10 +1,12 @@
 import {
-	Box, Button, Group, Header, Text
+	Box, Group, Header, Text
 } from '@mantine/core';
 import { IconSchool } from '@tabler/icons';
-import { signIn } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { HeaderDropdown } from './header/dropdown';
 import { HeaderLink } from './header/link';
+import { UserLoginButton } from './header/user/login';
+import { UserProfileButton } from './header/user/profile';
 
 interface BasicHeaderProps {
 	navbarOpened: boolean;
@@ -12,6 +14,7 @@ interface BasicHeaderProps {
 }
 
 export const BasicHeader = ({ navbarOpened, toggleNavbar }: BasicHeaderProps) => {
+	const { data } = useSession();
 	return (
 		<Box pb={60}>
 			<Header height={60} px="md">
@@ -27,7 +30,7 @@ export const BasicHeader = ({ navbarOpened, toggleNavbar }: BasicHeaderProps) =>
 					</Group>
 
 					<Group>
-						<Button variant="default" onClick={() => signIn('github')}>Log in</Button>
+						{data?.user ? <UserProfileButton user={data.user} /> : <UserLoginButton />}
 					</Group>
 				</Group>
 			</Header>
