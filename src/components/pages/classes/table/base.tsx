@@ -18,7 +18,7 @@ export const ClassesTable = ({ items }: ClassesTableProps) => {
 				<th>Icon</th>
 				<th>Name</th>
 				<th>
-					Anzahl Schüler*innen
+					Anzahl Mitglider
 				</th>
 				<th>{/* actions */}</th>
 			</tr>
@@ -34,7 +34,7 @@ export const ClassesTable = ({ items }: ClassesTableProps) => {
 					<td>{classItem.name}</td>
 					<td>
 						<Group
-							style={{ width: 142 }}
+							style={{ width: 110 }}
 							position='right'
 						>
 							{classItem.studentCount.toString()}
