@@ -1,5 +1,6 @@
 import { Class, Subject } from '@prisma/client';
 import { z } from 'zod';
+import { nameToRouteName } from '../../helper';
 import { protectedProcedure, router } from '../trpc';
 
 export const subjectRouter = router({
@@ -150,6 +151,7 @@ export const subjectRouter = router({
 			name: s.name,
 			icon: s.icon,
 			lessonCount: s.classSubject.length,
+			isArchived: s.isArchived,
 		}));
 	}),
 	get: protectedProcedure
@@ -168,15 +170,25 @@ export const subjectRouter = router({
 	create: protectedProcedure
 		.input(
 			z.object({
-				name: z.string().trim().min(2).max(30),
+				name: z.string().trim().min(2).max(50),
 				icon: z.string().trim().min(2).max(50),
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
+			const routerName = nameToRouteName(input.name);
+			const countWithSameRouterName = await ctx.prisma.subject.count({
+				where: {
+					routeName: {
+						equals: routerName,
+					},
+				},
+			});
+			if (countWithSameRouterName >= 1)
+				throw new Error('Routername already exists');
 			const subject = await ctx.prisma.subject.create({
 				data: {
 					...input,
-					routeName: '',
+					routeName: routerName,
 				},
 			});
 			return subject;
@@ -185,20 +197,79 @@ export const subjectRouter = router({
 		.input(
 			z.object({
 				id: z.string(),
-				name: z.string().trim().min(2).max(30),
+				name: z.string().trim().min(2).max(50),
 				icon: z.string().trim().min(2).max(50),
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
+			const routerName = nameToRouteName(input.name);
+			const countWithSameRouterName = await ctx.prisma.subject.count({
+				where: {
+					routeName: {
+						equals: routerName,
+					},
+					id: {
+						not: input.id,
+					},
+				},
+			});
+			if (countWithSameRouterName >= 1)
+				throw new Error('Routername already exists');
 			const subject = await ctx.prisma.subject.update({
 				data: {
 					name: input.name,
 					icon: input.icon,
+					routeName: routerName,
 				},
 				where: {
 					id: input.id,
 				},
 			});
 			return subject;
+		}),
+	archive: protectedProcedure
+		.input(
+			z.object({
+				id: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			return await ctx.prisma.subject.update({
+				data: {
+					isArchived: true,
+				},
+				where: {
+					id: input.id,
+				},
+			});
+		}),
+	unarchive: protectedProcedure
+		.input(
+			z.object({
+				id: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			return await ctx.prisma.subject.update({
+				data: {
+					isArchived: false,
+				},
+				where: {
+					id: input.id,
+				},
+			});
+		}),
+	remove: protectedProcedure
+		.input(
+			z.object({
+				id: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			return await ctx.prisma.subject.delete({
+				where: {
+					id: input.id,
+				},
+			});
 		}),
 });

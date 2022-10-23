@@ -6,9 +6,10 @@ import { useEffect } from "react";
 import { trpc } from "../../../utils/trpc";
 import { IconSelectModal, IconType } from "../../icon-select-modal";
 import { TablerIconComponent } from "../../tablerIcon";
+import { SubjectTableType } from "./table/type";
 
 interface SubjectCreateModal {
-	subject: { id: string, name: string, icon: string } | undefined;
+	subject: SubjectTableType;
 	opened: boolean;
 	close: () => void;
 }
@@ -19,28 +20,38 @@ interface FormType {
 }
 
 export const SubjectEditModal = ({ subject, opened, close }: SubjectCreateModal) => {
-	const form = useForm<FormType>();
+	const form = useForm<FormType>({
+		initialValues: {
+			name: subject?.name,
+			icon: subject?.icon
+		}
+	});
 	const utils = trpc.useContext();
 	const { mutateAsync } = trpc.subject.update.useMutation();
 	const onClose = () => {
 		close();
-		form.reset();
+		form.setValues({
+			icon: subject.icon,
+			name: subject.name
+		})
 	}
 	const handleSubmit = ({ name, icon }: FormType) => {
-		if (!subject) return;
 		mutateAsync({
 			id: subject.id,
 			name, icon
 		}, {
 			onSuccess(value) {
 				utils.subject.getAll.setData((previous) => {
-					const current = (previous ?? []).find(s => s.id == subject.id);
+					if (!previous) return previous;
+					const current = previous.find(s => s.id == subject.id);
 					if (!current) return previous;
-					current.name = value.name;
-					current.icon = value.icon;
-					return [...(previous ?? []).filter(s => s.id !== subject.id), current]
+					const copy = { ...current }
+					copy.name = value.name;
+					copy.icon = value.icon;
+					return [...(previous ?? []).filter(s => s.id !== subject.id), copy]
 				});
-				onClose()
+
+				close()
 			}
 		});
 	}
@@ -50,7 +61,6 @@ export const SubjectEditModal = ({ subject, opened, close }: SubjectCreateModal)
 	const [iconModalOpened, iconModal] = useDisclosure(false);
 
 	useEffect(() => {
-		if (!subject) return;
 		form.setValues({
 			icon: subject.icon,
 			name: subject.name

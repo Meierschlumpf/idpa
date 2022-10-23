@@ -19,6 +19,7 @@ model Subject {
   name              String
   routeName         String
   icon              String
+  isArchived        Boolean @default(false)
   classSubject      ClassSubject[]
 }
 

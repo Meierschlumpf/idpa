@@ -1,38 +1,25 @@
 import {
-	ActionIcon,
 	Button,
 	Container,
-	Group,
-	Table,
-	Text,
-	ThemeIcon,
-	Title,
-	Tooltip,
+	Group, Tabs,
+	Text, Title
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconArchive, IconPencil, IconPlus } from '@tabler/icons';
+import { IconPlus } from '@tabler/icons';
 import { NextPage } from 'next';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
+import { TableTab } from '../../components/common/tab';
 import { SubjectCreateModal } from '../../components/pages/subjects/create-modal';
-import { SubjectEditModal } from '../../components/pages/subjects/edit-modal';
-import { TablerIconComponent } from '../../components/tablerIcon';
+import { SubjectsTable } from '../../components/pages/subjects/table/base';
 import { BasicLayout } from '../../layout/basic';
 import { trpc } from '../../utils/trpc';
 
 const SubjectsPage: NextPage = () => {
-	const { data } = trpc.subject.getAll.useQuery();
+	const [activeTab, setActiveTab] = useState<string | null>('active');
 	const [createModalOpened, createModal] = useDisclosure(false);
-	const [editSubject, setEditSubject] = useState<{ id: string, name: string, icon: string }>();
-	const [editModalOpened, editModal] = useDisclosure(false, {
-		onClose() {
-			setEditSubject(undefined);
-		}
-	});
-	const ref = useRef<HTMLDivElement | null>(null);
-	const openEditModal = (subject: { id: string, name: string, icon: string }) => {
-		setEditSubject(subject);
-		editModal.open();
-	}
+	const { data } = trpc.subject.getAll.useQuery();
+	const activeItems = data?.filter(s => !s.isArchived);
+	const archivedItems = data?.filter(s => s.isArchived);
 
 	return (
 		<BasicLayout>
@@ -52,57 +39,28 @@ const SubjectsPage: NextPage = () => {
 						close={createModal.close}
 					/>
 				</Group>
+				<Group>
+					<Tabs value={activeTab} onTabChange={setActiveTab} style={{ width: '100%' }}>
+						<Tabs.List>
+							<TableTab value='active' count={activeItems?.length}>Aktiv</TableTab>
+							<TableTab value='archived' count={archivedItems?.length}>Archiviert</TableTab>
+							<TableTab value='all' count={data?.length ?? 0}>Alle</TableTab>
+						</Tabs.List>
 
-				<Table verticalSpacing='sm'>
-					<thead>
-						<tr>
-							<th>Icon</th>
-							<th>Name</th>
-							<th>
-								<Text span ref={ref}>
-									Anzahl Lektionen
-								</Text>
-							</th>
-							<th>{/* actions */}</th>
-						</tr>
-					</thead>
-					<tbody>
-						{data?.map((subject) => (
-							<tr key={subject.id}>
-								<td>
-									<ThemeIcon size={34} variant='default' radius='md'>
-										<TablerIconComponent name={subject.icon} />
-									</ThemeIcon>
-								</td>
-								<td>{subject.name}</td>
-								<td>
-									<Group
-										style={{ width: ref.current?.offsetWidth }}
-										position='right'
-									>
-										{subject.lessonCount.toString()} x
-									</Group>
-								</td>
-								<td>
-									<Group spacing={0} position='right'>
-										<Tooltip label='Fach bearbeiten'>
-											<ActionIcon onClick={() => openEditModal(subject)}>
-												<IconPencil size={16} stroke={1.5} />
-											</ActionIcon>
-										</Tooltip>
-										<Tooltip label='Fach archivieren'>
-											<ActionIcon>
-												<IconArchive color='red' size={16} stroke={1.5} />
-											</ActionIcon>
-										</Tooltip>
-									</Group>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</Table>
+						<Tabs.Panel value='active'>
+							<SubjectsTable items={activeItems} />
+						</Tabs.Panel>
+
+						<Tabs.Panel value='archived'>
+							<SubjectsTable items={archivedItems} />
+						</Tabs.Panel>
+
+						<Tabs.Panel value='all'>
+							<SubjectsTable items={data} />
+						</Tabs.Panel>
+					</Tabs>
+				</Group>
 			</Container>
-			<SubjectEditModal opened={editModalOpened} close={editModal.close} subject={editSubject} />
 		</BasicLayout>
 	);
 };
