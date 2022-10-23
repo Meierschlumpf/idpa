@@ -11,6 +11,7 @@ interface TableTabProps {
 export const TableTab = ({ value, children, showBadge = true, count }: TableTabProps) => {
 	return <Tabs.Tab
 		value={value}
+		pb={13}
 		sx={{
 			'&[data-active]': {
 				borderColor: '#ddd'
