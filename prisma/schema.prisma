@@ -45,6 +45,8 @@ model ClassSubject {
 model Class {
   id                String @id @default(cuid())
   name              String
+  icon              String @default("123")
+  isArchived        Boolean @default(false)
   subjects          ClassSubject[]
   students          Student[]
 }
