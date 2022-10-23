@@ -29,18 +29,20 @@ const ClassesPage: NextPage = () => {
 			<Container>
 				<Group position='apart' align='center'>
 					<Title>Klassen</Title>
-					<Button variant='light' color='gray' onClick={createModal.open}>
-						<Group align='center' spacing='xs'>
-							<IconPlus size={20} />
-							<Text style={{ lineHeight: 20 }} span>
-								Neue Klasse
-							</Text>
-						</Group>
-					</Button>
-					<ClassCreateModal
-						opened={createModalOpened}
-						close={createModal.close}
-					/>
+					<Group>
+						<Button variant='light' color='gray' onClick={createModal.open}>
+							<Group align='center' spacing='xs'>
+								<IconPlus size={20} />
+								<Text style={{ lineHeight: 20 }} span>
+									Neue Klasse
+								</Text>
+							</Group>
+						</Button>
+						<ClassCreateModal
+							opened={createModalOpened}
+							close={createModal.close}
+						/>
+					</Group>
 				</Group>
 				<Divider my={4} />
 				<Group>

@@ -67,7 +67,7 @@ export const SubjectEditModal = ({ subject, opened, close }: SubjectCreateModal)
 		})
 	}, [subject])
 
-	return <Modal opened={opened} onClose={onClose} title={<Title order={3}>Fach hinzufügen</Title>}>
+	return <Modal opened={opened} onClose={onClose} title={<Title order={3}>Fach bearbeiten</Title>}>
 		<form onSubmit={form.onSubmit(handleSubmit)}>
 			<Stack>
 				<TextInput

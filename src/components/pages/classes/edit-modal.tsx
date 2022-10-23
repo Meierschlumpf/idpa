@@ -67,7 +67,7 @@ export const ClassEditModal = ({ classItem, opened, close }: ClassCreateModal) =
 		})
 	}, [classItem])
 
-	return <Modal opened={opened} onClose={onClose} title={<Title order={3}>Fach hinzufügen</Title>}>
+	return <Modal opened={opened} onClose={onClose} title={<Title order={3}>Klasse bearbeiten</Title>}>
 		<form onSubmit={form.onSubmit(handleSubmit)}>
 			<Stack>
 				<TextInput
