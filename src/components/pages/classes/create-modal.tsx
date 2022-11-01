@@ -1,30 +1,38 @@
-import { ActionIcon, Button, Group, Modal, Stack, TextInput, Title } from "@mantine/core";
+import { Button, Group, Modal, Stack, Tabs, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useDisclosure } from "@mantine/hooks";
-import { IconCircleOff, IconListSearch } from "@tabler/icons";
+import { IconCircleOff } from "@tabler/icons";
+import { useState } from "react";
 import { trpc } from "../../../utils/trpc";
-import { IconSelectModal, IconType } from "../../icon-select-modal";
 import { TablerIconComponent } from "../../tablerIcon";
+import { ClassLessonsTab } from "./create-modal/lessons";
+import { ClassMainTab } from "./create-modal/main";
+import { ClassStudentsTab } from "./create-modal/students";
+import { useStudentsStore } from "./create-modal/students/store";
 
-interface ClassCreateModal {
+interface ClassCreateModalProps {
 	opened: boolean;
 	close: () => void;
 }
 
-interface FormType {
+export interface CreateClassFormType {
 	name: string;
 	icon: string;
+	studentIds: string[];
 }
 
-export const ClassCreateModal = ({ opened, close }: ClassCreateModal) => {
-	const form = useForm<FormType>();
+export const ClassCreateModal = ({ opened, close }: ClassCreateModalProps) => {
+	const form = useForm<CreateClassFormType>();
+	const [activeTab, setActiveTab] = useState<string | null>('main');
 	const utils = trpc.useContext();
 	const { mutateAsync } = trpc.class.create.useMutation();
+	const resetStudents = useStudentsStore(x => x.reset)
 	const onClose = () => {
 		close();
 		form.reset();
+		resetStudents();
+		setActiveTab('main');
 	}
-	const handleSubmit = ({ name, icon }: FormType) => {
+	const handleSubmit = ({ name, icon }: CreateClassFormType) => {
 		mutateAsync({ name, icon }, {
 			onSuccess(value) {
 				utils.class.getAll.setData((previous) => [...(previous ?? []), { ...value, studentCount: 0 }]);
@@ -32,40 +40,38 @@ export const ClassCreateModal = ({ opened, close }: ClassCreateModal) => {
 			}
 		});
 	}
-	const handleIconSelect = (icon: IconType) => {
-		form.setFieldValue('icon', icon.react.replace('Icon', ''));
-	}
-	const [iconModalOpened, iconModal] = useDisclosure(false);
 
-	return <Modal opened={opened} onClose={onClose} title={<Title order={3}>Klasse hinzufügen</Title>}>
+	return <Modal size="xl" opened={opened} onClose={onClose} title={<Title order={3}>Klasse hinzufügen</Title>}>
+		<Stack align="center">
+			{form.values.icon ? <TablerIconComponent size={64} name={form.values.icon} /> : <IconCircleOff size={64} />}
+			<Title order={6}>{form.values.name ?? 'Nicht definiert'}</Title>
+		</Stack>
+
 		<form onSubmit={form.onSubmit(handleSubmit)}>
-			<Stack>
-				<TextInput
-					data-autofocus
-					label="Name"
-					placeholder="Bsp. Inf2022a"
-					{...form.getInputProps('name')}
-					required
-				/>
+			<Stack pt='lg'>
+				<Tabs value={activeTab} onTabChange={setActiveTab}>
+					<Tabs.List grow>
+						<Tabs.Tab value="main">Allgemein</Tabs.Tab>
+						<Tabs.Tab value="students">Mitglieder</Tabs.Tab>
+						<Tabs.Tab value="lessons">Lektionen</Tabs.Tab>
+					</Tabs.List>
 
-				<TextInput
-					label="Icon auswählen"
-					placeholder="Bsp. Book"
-					icon={form.values.icon ? <TablerIconComponent name={form.values.icon} /> : <IconCircleOff />}
-					rightSection={<ActionIcon variant="light" onClick={iconModal.open}>
-						<IconListSearch />
-					</ActionIcon>}
-					{...form.getInputProps('icon')}
-					required
-					disabled
-				/>
+					<Tabs.Panel value="main" pt='sm'>
+						<ClassMainTab form={form} />
+					</Tabs.Panel>
+					<Tabs.Panel value="students" pt='sm'>
+						<ClassStudentsTab form={form} />
+					</Tabs.Panel>
+					<Tabs.Panel value="lessons" pt='sm'>
+						<ClassLessonsTab form={form} />
+					</Tabs.Panel>
+				</Tabs>
 
 				<Group position="right">
 					<Button variant="subtle" color="gray" onClick={onClose}>Abbrechen</Button>
 					<Button color="teal" type="submit">Speichern</Button>
 				</Group>
 			</Stack>
-			<IconSelectModal opened={iconModalOpened} close={iconModal.close} callback={handleIconSelect} />
 		</form>
 	</Modal>
 }
