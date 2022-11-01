@@ -1,9 +1,12 @@
-import { Container, Title } from "@mantine/core";
+import { Container } from "@mantine/core";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { BasicLayout } from "../layout/basic";
+import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
+  const { data: subjects } = trpc.subject.getAll.useQuery();
+
 
   return (
     <>
@@ -14,7 +17,7 @@ const Home: NextPage = () => {
       </Head>
       <BasicLayout>
         <Container>
-          <Title order={1}>Hello World</Title>
+
         </Container>
       </BasicLayout>
     </>

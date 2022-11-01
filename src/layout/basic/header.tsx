@@ -1,11 +1,8 @@
 import {
-	Box, Group, Header, Text
+	Box, Group, Header, Select, Text
 } from '@mantine/core';
 import { IconSchool } from '@tabler/icons';
-import { trpc } from '../../utils/trpc';
-import { UserLoginButton } from './header/user/login';
-import { UserProfileButton } from './header/user/profile';
-import { AdminHeaderNavigation } from './header/variant/admin';
+import { useAuthStore } from '../../stores/auth-store';
 import { StudentHeaderNavigation } from './header/variant/student';
 import { TeacherHeaderNavigation } from './header/variant/teacher';
 
@@ -14,8 +11,9 @@ interface BasicHeaderProps {
 	toggleNavbar: () => void;
 }
 
-export const BasicHeader = ({ navbarOpened, toggleNavbar }: BasicHeaderProps) => {
-	const { data } = trpc.auth.getSession.useQuery();
+export const BasicHeader = ({ }: BasicHeaderProps) => {
+	const role = useAuthStore(x => x.role)
+	const setRole = useAuthStore(x => x.setRole)
 
 	return (
 		<Box pb={60}>
@@ -27,11 +25,11 @@ export const BasicHeader = ({ navbarOpened, toggleNavbar }: BasicHeaderProps) =>
 					</Group>
 
 					<Group sx={{ height: '100%' }} spacing={0}>
-						{data?.user?.role === 'admin' ? <AdminHeaderNavigation /> : data?.user?.role === 'student' ? <StudentHeaderNavigation /> : <TeacherHeaderNavigation />}
+						{role === 'student' ? <StudentHeaderNavigation /> : <TeacherHeaderNavigation />}
 					</Group>
 
 					<Group>
-						{data?.user ? <UserProfileButton user={data.user} /> : <UserLoginButton />}
+						<Select value={role} data={['student', 'teacher']} onChange={(v) => setRole(v ?? 'student')} />
 					</Group>
 				</Group>
 			</Header>
