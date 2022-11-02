@@ -12,6 +12,7 @@ interface Props {
 export const PlanCreateModal = ({ opened, closeModal, subjectId }: Props) => {
 
 	const { mutateAsync } = trpc.plan.create.useMutation();
+	const utils = trpc.useContext();
 	const form = useForm<FormType>({
 		initialValues: {
 			start: generateStart(),
@@ -30,7 +31,9 @@ export const PlanCreateModal = ({ opened, closeModal, subjectId }: Props) => {
 
 			},
 			onSuccess() {
-
+				utils.plan.getAll.invalidate();
+				utils.plan.getBySubjectId.invalidate();
+				onClose();
 			}
 		});
 	}
