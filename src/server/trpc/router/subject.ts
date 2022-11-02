@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { publicProcedure, router } from '../trpc';
 
 export const subjectRouter = router({
@@ -11,4 +12,24 @@ export const subjectRouter = router({
 			routeName: s.routeName,
 		}));
 	}),
+	getByRouteName: publicProcedure
+		.input(
+			z.object({
+				routeName: z.string(),
+			}),
+		)
+		.query(async ({ ctx, input }) => {
+			const subject = await ctx.prisma.subject.findFirst({
+				where: {
+					routeName: input.routeName,
+				},
+			});
+			return subject
+				? {
+						id: subject.id,
+						name: subject.name,
+						icon: subject.icon,
+				  }
+				: undefined;
+		}),
 });

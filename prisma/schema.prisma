@@ -19,4 +19,31 @@ model Subject {
   name              String
   routeName         String
   icon              String
+  planItems         PlanItem[]
+}
+
+model PlanItem {
+  id                String @id @default(cuid())
+  date              DateTime
+  title             String
+  description       String?
+  subjectId         String
+  badges            PlanItemBadge[]
+  subject           Subject @relation(fields: [subjectId], references: [id])
+}
+
+model PlanItemBadge {
+  itemId            String
+  badgeId           String
+  evaluated         Boolean
+  item              PlanItem @relation(fields: [itemId], references: [id])
+  badge             PlanBadge @relation(fields: [badgeId], references: [id])
+
+  @@id([itemId, badgeId])
+}
+
+model PlanBadge {
+  id                String @id @default(cuid())
+  name              String
+  items            PlanItemBadge[]
 }

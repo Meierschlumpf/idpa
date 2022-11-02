@@ -1,8 +1,6 @@
-import { Box, Collapse, createStyles, Group, Text, ThemeIcon, UnstyledButton } from '@mantine/core';
+import { Box, createStyles, Group, ThemeIcon, UnstyledButton } from '@mantine/core';
 import { NextLink } from '@mantine/next';
-import { IconChevronLeft, IconChevronRight, TablerIcon } from '@tabler/icons';
-import { useRouter } from 'next/router';
-import { MouseEvent, useEffect, useState } from 'react';
+import { MouseEvent, ReactNode } from 'react';
 
 const useStyles = createStyles((theme) => ({
 	control: {
@@ -43,57 +41,26 @@ const useStyles = createStyles((theme) => ({
 }));
 
 interface LinksGroupProps {
-	icon: TablerIcon;
+	icon: ReactNode;
 	label: string;
 	link: string;
-	initiallyOpened?: boolean;
-	links?: { label: string; link: string }[];
 }
 
-export function LinksGroup({ icon: Icon, label, link, initiallyOpened, links }: LinksGroupProps) {
-	const { classes, theme } = useStyles();
-	const hasLinks = Array.isArray(links);
-	const router = useRouter();
-	const [opened, setOpened] = useState(initiallyOpened || false);
-	const ChevronIcon = theme.dir === 'ltr' ? IconChevronRight : IconChevronLeft;
-	const items = (hasLinks ? links : []).map((link) => (
-		<Text
-			component={NextLink}
-			className={classes.link}
-			href={link.link}
-			key={link.label}
-		>
-			{link.label}
-		</Text>
-	));
-
-	useEffect(() => {
-		setOpened(router.asPath.toLowerCase().startsWith(link.toLowerCase()))
-	}, [router.asPath, link])
+export function LinksGroup({ icon, label, link }: LinksGroupProps) {
+	const { classes } = useStyles();
 
 	return (
 		<>
-			<UnstyledButton onClick={() => setOpened((o) => !o)} className={classes.control}>
+			<UnstyledButton component={NextLink} href={'/[subjectName]'} as={link} className={classes.control}>
 				<Group position="apart" spacing={0}>
 					<Box sx={{ display: 'flex', alignItems: 'center' }}>
 						<ThemeIcon variant="light" size={30}>
-							<Icon size={18} />
+							{icon}
 						</ThemeIcon>
-						<Box ml="md" onClick={(ev: MouseEvent) => { ev.stopPropagation() }} component={NextLink} href={link}>{label}</Box>
+						<Box ml="md" onClick={(ev: MouseEvent) => { ev.stopPropagation() }} >{label}</Box>
 					</Box>
-					{hasLinks && (
-						<ChevronIcon
-							className={classes.chevron}
-							size={14}
-							stroke={1.5}
-							style={{
-								transform: opened ? `rotate(${theme.dir === 'rtl' ? -90 : 90}deg)` : 'none',
-							}}
-						/>
-					)}
 				</Group>
 			</UnstyledButton>
-			{hasLinks ? <Collapse in={opened}>{items}</Collapse> : null}
 		</>
 	);
 }

@@ -1,21 +1,21 @@
 import { createStyles, Navbar, ScrollArea } from '@mantine/core';
-import { Icon123 } from '@tabler/icons';
-import { useRouter } from 'next/router';
 import { trpc } from '../../utils/trpc';
 import { LinksGroup } from '../links-group';
+import { TablerIconComponent } from '../tablerIcon';
+
 
 export const PlansSidebar = () => {
 	const { classes } = useStyles();
-	const router = useRouter();
-	const { data } = trpc.subject.getSidebar.useQuery();
+	const { data: subjects } = trpc.subject.getAll.useQuery();
 
-	const links = data?.map((c) => <LinksGroup icon={Icon123} label={c.name} link={`/plans/${c.name.toLowerCase()}`} initiallyOpened={router.asPath.split('/')[2] === c.name.toLowerCase()} links={c.subjects?.map(s => ({ label: s.name, link: `/plans/${c.name.toLowerCase()}/${s.routeName}` }))} key={c.id} />);
+	const links = subjects?.map((s) => <LinksGroup icon={<TablerIconComponent name={s.icon} size={16} />} label={s.name} link={`/${s.routeName}`} key={s.id} />);
 
 	return (
 		<Navbar.Section grow className={classes.links} component={ScrollArea}>
 			<div className={classes.linksInner}>{links}</div>
 		</Navbar.Section>
 	);
+
 }
 
 const useStyles = createStyles((theme) => ({
