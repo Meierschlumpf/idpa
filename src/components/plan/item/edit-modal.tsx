@@ -49,7 +49,7 @@ export const PlanItemEditModal = ({ item, opened, closeModal }: Props) => {
 	const handleAddition = async (id: string) => {
 		const badge = badges?.find(x => x.id === id);
 		if (!badge) return;
-		form.insertListItem('badges', badge)
+		form.insertListItem('badges', { id, evaluated: badge.name === 'exam' })
 	}
 
 	const handleRemoval = async (id: string) => {
