@@ -1,179 +1,38 @@
-import {
-	Card,
-	Group, Stack,
-	Text,
-	Title, useMantineTheme
-} from '@mantine/core';
-import { MutableRefObject, RefObject } from 'react';
-import { getWeekNumber } from '../../helpers/time/get-week-number';
-import { trpc } from '../../utils/trpc';
-import { TablerIconComponent } from '../tablerIcon';
-import { BadgeList } from './item/badge/list';
-import { PlanItemEditMenu } from './item/edit-menu';
+import React from "react";
+import { PlanHolidayItem } from "./item/holiday";
+import { PlanLessonItem, PlanLessonItemProps } from "./item/lesson";
+import { PlanVacationItem } from "./item/vacation";
 
-interface PlanItemProps {
-	subject?: { id: string; name: string; icon: string };
-	item: {
-		id: string;
-		title: string;
-		description?: string;
-		date: Date;
-		badges: { id: string; name: string; evaluated: boolean }[];
-	};
-	showKw?: boolean;
-	targetRef?: MutableRefObject<HTMLElement>;
-	isNext?: boolean;
-	mode?: 'read' | 'write';
+
+type LessonType = {
+	type: 'lesson';
+	props: PlanLessonItemProps;
 }
 
-export const PlanItem = ({
-	subject,
-	item,
-	showKw = true,
-	targetRef,
-	isNext,
-	mode,
-}: PlanItemProps) => {
-	const theme = useMantineTheme();
-	const week = getWeekNumber(item.date);
-	const utils = trpc.useContext();
-	const addBadge = trpc.plan.addBadge.useMutation();
-	const removeBadge = trpc.plan.removeBadge.useMutation();
-	const changeBadgeEvaluation = trpc.plan.changeBadgeEvaluation.useMutation();
+type VacationType = {
+	type: 'vacation';
+	props: {start: Date, end: Date, name: string}
+}
 
-	const handleAddition = async (badgeId: string) => {
-		await addBadge.mutateAsync({ itemId: item.id, badgeId }, {
-			onSuccess() {
-				utils.plan.getAll.invalidate();
-				utils.plan.getBySubjectId.invalidate();
-			},
-		});
+type HolidayType = {
+	type: 'holiday';
+	props: {date: Date, name: string}
+}
 
-	}
+type PlanItemProps = LessonType|VacationType|HolidayType;
 
-	const handleRemoval = async (badgeId: string) => {
-		await removeBadge.mutateAsync({ itemId: item.id, badgeId }, {
-			onSuccess() {
-				utils.plan.getAll.invalidate();
-				utils.plan.getBySubjectId.invalidate();
-			}
-		});
-	}
+export const PlanItem = ({type, props}: PlanItemProps) => {
+	const Component = components[type];
+	
+	return <Component {...props} />
+}
 
-	const handleSwitch = async (badgeId: string, evaluated: boolean) => {
-		await changeBadgeEvaluation.mutateAsync({ itemId: item.id, badgeId, evaluated }, {
-			onSuccess() {
-				utils.plan.getAll.invalidate();
-				utils.plan.getBySubjectId.invalidate();
-			},
-		});
-	}
+const components: {[key in PlanItemProps['type'] ]: React.ElementType} = {
+	'lesson': PlanLessonItem,
+	'holiday': PlanHolidayItem,
+	'vacation': PlanVacationItem,
+}
 
-
-	return (
-		<Card
-			mt={isNext ? 20 : undefined}
-			style={{
-				borderColor: isNext ? theme.colors.blue[5] : undefined,
-				overflow: 'visible',
-			}}
-			ref={targetRef as RefObject<HTMLDivElement>}
-			shadow='sm'
-			p='lg'
-			radius='md'
-			withBorder
-		>
-			{isNext && (
-				<Text
-					style={{
-						position: 'absolute',
-						top: -24,
-						left: 0,
-						color: theme.colors.blue[5],
-					}}
-				>
-					{getNextDate(item.date)}
-				</Text>
-			)}
-			<Stack>
-				<Group position='apart' align='center'>
-					<Title order={3}>
-						{showKw && `KW ${week} - `}
-						{item.title}
-					</Title>
-					{subject && mode !== 'write' && (
-						<Group align='center'>
-							<TablerIconComponent name={subject.icon} />
-							<Title order={4}>{subject.name}</Title>
-						</Group>
-					)}
-					{mode === 'write' && (
-						<PlanItemEditMenu item={item} />
-					)}
-				</Group>
-				{item.description && (
-					<Group>
-						<Text>{item.description}</Text>
-					</Group>
-				)}
-				<BadgeList mode={mode} activeBadges={item.badges} handleSwitch={handleSwitch} handleAddition={handleAddition} handleRemoval={handleRemoval} />
-			</Stack>
-		</Card>
-	);
-};
-
-// TODO: move to helper function
-
-const isTomorrow = (date: Date) => {
-	const now = new Date();
-	const tomorrow = new Date(
-		now.getFullYear(),
-		now.getMonth(),
-		now.getDate() + 1,
-	);
-	return (
-		tomorrow.getFullYear() === date.getFullYear() &&
-		tomorrow.getMonth() === date.getMonth() &&
-		tomorrow.getDate() === date.getDate()
-	);
-};
-
-const isToday = (date: Date) => {
-	const now = new Date();
-	return (
-		now.getFullYear() === date.getFullYear() &&
-		now.getMonth() === date.getMonth() &&
-		now.getDate() === date.getDate()
-	);
-};
-
-const getNextDate = (date: Date) => {
-	const now = new Date();
-	const today = new Date();
-	const week = 1000 * 3600 * 24 * 7;
-	const inOneWeek = new Date(
-		now.getFullYear(),
-		now.getMonth(),
-		now.getDate() + 8,
-	);
-	const difference = Math.floor((date.getTime() - today.getTime()) / week);
-	return date > inOneWeek
-		? difference === 1
-			? 'In einer Woche'
-			: `In ${difference} Wochen`
-		: isToday(date)
-			? `Heute`
-			: isTomorrow(date)
-				? 'Morgen'
-				: `Nächsten ${days[date.getDay()]}`;
-};
-
-const days = [
-	'Sonntag',
-	'Montag',
-	'Dienstag',
-	'Mitwoch',
-	'Donnerstag',
-	'Freitag',
-	'Samstag',
-];
+export type PlanItemMapperProps = PlanItemProps & {
+	sortBy: Date;
+}

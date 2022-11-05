@@ -19,17 +19,29 @@ model Subject {
   name              String
   routeName         String
   icon              String
-  planItems         PlanItem[]
+  plans             Plan[]
+}
+
+model Plan {
+  id                String @id @default(cuid())
+  start             DateTime
+  end               DateTime
+  name              String
+  day               Int
+  subjectId         String
+  subject           Subject @relation(fields: [subjectId], references: [id])
+  items             PlanItem[]
+
 }
 
 model PlanItem {
   id                String @id @default(cuid())
   date              DateTime
-  title             String
+  title             String?
   description       String?
-  subjectId         String
+  planId            String
   badges            PlanItemBadge[]
-  subject           Subject @relation(fields: [subjectId], references: [id])
+  plan              Plan @relation(fields: [planId], references: [id])
 }
 
 model PlanItemBadge {

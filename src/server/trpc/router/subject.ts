@@ -21,7 +21,7 @@ export const subjectRouter = router({
 		.query(async ({ ctx, input }) => {
 			const subject = await ctx.prisma.subject.findFirst({
 				where: {
-					routeName: input.routeName,
+					routeName: input.routeName.toLowerCase(),
 				},
 			});
 			return subject
@@ -30,6 +30,6 @@ export const subjectRouter = router({
 						name: subject.name,
 						icon: subject.icon,
 				  }
-				: undefined;
+				: null;
 		}),
 });

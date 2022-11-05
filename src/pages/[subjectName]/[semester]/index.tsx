@@ -7,54 +7,48 @@ import {
 	Stack,
 	Text,
 } from '@mantine/core';
-import { useDisclosure, useScrollIntoView } from '@mantine/hooks';
+import { useScrollIntoView } from '@mantine/hooks';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { PlanCreateModal } from '../../components/plan/create-modal';
-import { PlanItem, PlanItemMapperProps } from '../../components/plan/item';
-import { PlansSidebar } from '../../components/plan/sidebar';
-import { PlanTitle } from '../../components/plan/title';
-import { vacations } from '../../constants/vacations';
-import { BasicLayout } from '../../layout/basic';
-import { useAuthStore } from '../../stores/auth-store';
-import { trpc } from '../../utils/trpc';
+import { useMemo } from 'react';
+import { PlanItem, PlanItemMapperProps } from '../../../components/plan/item';
+import { PlansSidebar } from '../../../components/plan/sidebar';
+import { PlanTitle } from '../../../components/plan/title';
+import { vacations } from '../../../constants/vacations';
+import { BasicLayout } from '../../../layout/basic';
+import { useAuthStore } from '../../../stores/auth-store';
+import { trpc } from '../../../utils/trpc';
 
-const Plan: NextPage = () => {
-	const router = useRouter();
-	const { subjectName } = router.query as { subjectName: string };
-	const { data: subject } = trpc.subject.getByRouteName.useQuery({
-		routeName: subjectName,
-	});
-	const role = useAuthStore((x) => x.role);
-	const { data: planItems } = trpc.planItem.getBySubjectId.useQuery(
-		{ subjectId: subject?.id ?? null },
-		{
-			enabled: subject != undefined,
-		},
-	);
+const SemesterPlan: NextPage = () => {
 	const { scrollIntoView, targetRef, scrollableRef } = useScrollIntoView({
 		duration: 100,
 	});
-	const [createModalOpened, createModal] = useDisclosure(false);
+	const { subject, plan, lessons } = useSemesterPlan();
+	const role = useAuthStore((x) => x.role);
+
+	const inSpecVacations = useMemo(() => {
+		if (!plan) return [];
+		return vacations.filter((x) => x.end >= plan.start && x.start <= plan.end);
+	}, [plan]);
 
 	const now = new Date();
 	const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-	const nextLessonId = planItems
+	const nextLessonId = lessons
 		?.filter((x) => x.date.getTime() >= today.getTime())
 		.sort((a, b) => a.date.getTime() - b.date.getTime())[0]?.id;
-	const nextVacationStart = vacations
+	const nextVacationStart = inSpecVacations
 		.filter(
 			(x) => x.start.getTime() >= today.getTime() + 1000 * 60 * 60 * 24 * 3,
 		)
 		.sort((a, b) => a.start.getTime() - b.start.getTime())[0]
 		?.start.getTime();
-	const currentlyInVacation = vacations.some(
+	const currentlyInVacation = inSpecVacations.some(
 		(v) =>
 			v.start.getTime() <= today.getTime() + 1000 * 60 * 60 * 24 * 3 &&
 			v.end.getTime() >= today.getTime() - 1000 * 60 * 60 * 24,
 	);
-	const nextVacationEnd = vacations
+	const nextVacationEnd = inSpecVacations
 		.filter((x) => x.end.getTime() >= today.getTime() - 1000 * 60 * 60 * 24)
 		.sort((a, b) => a.end.getTime() - b.end.getTime())[0]
 		?.end.getTime();
@@ -72,29 +66,14 @@ const Plan: NextPage = () => {
 			<BasicLayout sidebarContent={<PlansSidebar />}>
 				<Container>
 					<Group position='apart' pb='md'>
-						<PlanTitle subject={subject} />
-						{planItems?.length === 0 ? (
-							role === 'teacher' && (
-								<>
-									<Button variant='light' onClick={createModal.open}>
-										Semesterplan erstellen
-									</Button>
-									<PlanCreateModal
-										opened={createModalOpened}
-										closeModal={createModal.close}
-										subjectId={subject?.id ?? ''}
-									/>
-								</>
-							)
-						) : (
-							<Button
-								onClick={() => scrollIntoView()}
-								variant='light'
-								color='gray'
-							>
-								Zur nächsten Lektion springen
-							</Button>
-						)}
+						<PlanTitle subject={subject} planName={plan?.name} />
+						<Button
+							onClick={() => scrollIntoView()}
+							variant='light'
+							color='gray'
+						>
+							Zur nächsten Lektion springen
+						</Button>
 					</Group>
 					<ScrollArea
 						styles={{
@@ -106,13 +85,13 @@ const Plan: NextPage = () => {
 						viewportRef={scrollableRef}
 					>
 						<Stack>
-							{planItems?.length === 0 && (
+							{lessons?.length === 0 && (
 								<Center>
 									<Text weight={500}>Es wurden keine Elemente gefunden</Text>
 								</Center>
 							)}
 							{(
-								planItems?.map((item) => ({
+								lessons?.map((item) => ({
 									type: 'lesson',
 									props: {
 										item,
@@ -124,7 +103,7 @@ const Plan: NextPage = () => {
 								})) as PlanItemMapperProps[]
 							)
 								.concat(
-									vacations.map((vacation) => ({
+									inSpecVacations.map((vacation) => ({
 										type: 'vacation',
 										props: {
 											...vacation,
@@ -150,4 +129,46 @@ const Plan: NextPage = () => {
 	);
 };
 
-export default Plan;
+export default SemesterPlan;
+
+type RouteParamsType = {
+	subjectName: string;
+	semester: string;
+};
+
+const useSemesterPlan = () => {
+	const router = useRouter();
+	const { subjectName, semester } = router.query as RouteParamsType;
+	const { data: subject, ...subjectQuery } =
+		trpc.subject.getByRouteName.useQuery(
+			{
+				routeName: subjectName,
+			},
+			{
+				enabled: !!subjectName,
+			},
+		);
+	const { data: plan, ...planQuery } = trpc.plan.getByNameAndSubjectId.useQuery(
+		{
+			name: semester,
+			subjectId: subject?.id ?? '',
+		},
+		{
+			enabled: !!subject && !!semester,
+		},
+	);
+	const { data: lessons, ...lessonsQuery } = trpc.planItem.getByPlanId.useQuery(
+		{ planId: plan?.id ?? '' },
+		{
+			enabled: !!plan,
+		},
+	);
+	return {
+		isError: subjectQuery.isError || planQuery.isError || lessonsQuery.isError,
+		isLoading:
+			subjectQuery.isLoading || planQuery.isLoading || lessonsQuery.isLoading,
+		subject,
+		plan,
+		lessons,
+	};
+};
