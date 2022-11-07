@@ -3,10 +3,10 @@ import { TablerIconComponent } from '../tablerIcon';
 
 interface PlanItemProps {
 	subject?: { name: string; icon: string } | null;
-	planName?: string;
+	semester?: string;
 }
 
-export const PlanTitle = ({ subject, planName }: PlanItemProps) => {
+export const PlanTitle = ({ subject, semester: planName }: PlanItemProps) => {
 	return (
 		<>
 			<Group align='center'>

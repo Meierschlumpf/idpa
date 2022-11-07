@@ -23,12 +23,19 @@ export const subjectRouter = router({
 				where: {
 					routeName: input.routeName.toLowerCase(),
 				},
+				include: {
+					plans: true
+				}
 			});
 			return subject
 				? {
 						id: subject.id,
 						name: subject.name,
 						icon: subject.icon,
+						plans: subject.plans.map(p => ({
+							id: p.id,
+							semesterId: p.semesterId
+						}))
 				  }
 				: null;
 		}),

@@ -1,14 +1,14 @@
 // src/pages/_app.tsx
-import '../styles/globals.css';
-import { SessionProvider } from 'next-auth/react';
+import { MantineProvider } from '@mantine/core';
+import { NotificationsProvider } from '@mantine/notifications';
 import type { Session } from 'next-auth';
 import type { AppType } from 'next/app';
+import '../styles/globals.css';
 import { trpc } from '../utils/trpc';
-import { MantineProvider } from '@mantine/core';
 
 const MyApp: AppType<{ session: Session | null }> = ({
 	Component,
-	pageProps: { session, ...pageProps },
+	pageProps: { ...pageProps },
 }) => {
 	return (
 		<MantineProvider
@@ -19,9 +19,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
 				colorScheme: 'dark',
 			}}
 		>
-			<SessionProvider session={session}>
+			<NotificationsProvider>
 				<Component {...pageProps} />
-			</SessionProvider>
+			</NotificationsProvider>
 		</MantineProvider>
 	);
 };

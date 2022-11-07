@@ -1,48 +1,27 @@
-import {
-	Card,
-	Group,
-	Stack,
-	Text,
-	Title,
-	useMantineTheme,
-} from '@mantine/core';
+import { Card, Group, Stack, Text, Title, useMantineTheme } from '@mantine/core';
 import { MutableRefObject, RefObject } from 'react';
 import { getWeekNumber } from '../../../helpers/time/get-week-number';
-import { trpc } from '../../../utils/trpc';
+import { AppRouterTypes, trpc } from '../../../utils/trpc';
 import { TablerIconComponent } from '../../tablerIcon';
 import { BadgeList } from './badge/list';
 import { PlanItemEditMenu } from './edit-menu';
 
 export interface PlanLessonItemProps {
 	subject?: { id: string; name: string; icon: string };
-	item: {
-		id: string;
-		title: string;
-		description?: string | null;
-		date: Date;
-		badges: { id: string; name: string; evaluated: boolean }[];
-	};
+	item: AppRouterTypes['planItem']['getBySemesterId']['output'][0];
 	showKw?: boolean;
 	targetRef?: MutableRefObject<HTMLElement>;
 	isNext?: boolean;
 	mode?: 'read' | 'write';
 }
 
-export const PlanLessonItem = ({
-	subject,
-	item,
-	showKw = true,
-	targetRef,
-	isNext,
-	mode,
-}: PlanLessonItemProps) => {
+export const PlanLessonItem = ({ subject, item, showKw = true, targetRef, isNext, mode }: PlanLessonItemProps) => {
 	const theme = useMantineTheme();
 	const week = getWeekNumber(item.date);
 	const utils = trpc.useContext();
 	const addBadge = trpc.planItem.addBadge.useMutation();
 	const removeBadge = trpc.planItem.removeBadge.useMutation();
-	const changeBadgeEvaluation =
-		trpc.planItem.changeBadgeEvaluation.useMutation();
+	const changeBadgeEvaluation = trpc.planItem.changeBadgeEvaluation.useMutation();
 
 	const handleAddition = async (badgeId: string) => {
 		await addBadge.mutateAsync(
@@ -51,6 +30,7 @@ export const PlanLessonItem = ({
 				onSuccess() {
 					utils.planItem.getAll.invalidate();
 					utils.planItem.getBySubjectId.invalidate();
+					utils.planItem.getByPlanId.invalidate();
 				},
 			},
 		);
@@ -63,6 +43,7 @@ export const PlanLessonItem = ({
 				onSuccess() {
 					utils.planItem.getAll.invalidate();
 					utils.planItem.getBySubjectId.invalidate();
+					utils.planItem.getByPlanId.invalidate();
 				},
 			},
 		);
@@ -75,6 +56,7 @@ export const PlanLessonItem = ({
 				onSuccess() {
 					utils.planItem.getAll.invalidate();
 					utils.planItem.getBySubjectId.invalidate();
+					utils.planItem.getByPlanId.invalidate();
 				},
 			},
 		);
@@ -124,13 +106,7 @@ export const PlanLessonItem = ({
 						<Text>{item.description}</Text>
 					</Group>
 				)}
-				<BadgeList
-					mode={mode}
-					activeBadges={item.badges}
-					handleSwitch={handleSwitch}
-					handleAddition={handleAddition}
-					handleRemoval={handleRemoval}
-				/>
+				<BadgeList mode={mode} activeBadges={item.badges} handleSwitch={handleSwitch} handleAddition={handleAddition} handleRemoval={handleRemoval} />
 			</Stack>
 		</Card>
 	);
@@ -140,54 +116,22 @@ export const PlanLessonItem = ({
 
 const isTomorrow = (date: Date) => {
 	const now = new Date();
-	const tomorrow = new Date(
-		now.getFullYear(),
-		now.getMonth(),
-		now.getDate() + 1,
-	);
-	return (
-		tomorrow.getFullYear() === date.getFullYear() &&
-		tomorrow.getMonth() === date.getMonth() &&
-		tomorrow.getDate() === date.getDate()
-	);
+	const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+	return tomorrow.getFullYear() === date.getFullYear() && tomorrow.getMonth() === date.getMonth() && tomorrow.getDate() === date.getDate();
 };
 
 const isToday = (date: Date) => {
 	const now = new Date();
-	return (
-		now.getFullYear() === date.getFullYear() &&
-		now.getMonth() === date.getMonth() &&
-		now.getDate() === date.getDate()
-	);
+	return now.getFullYear() === date.getFullYear() && now.getMonth() === date.getMonth() && now.getDate() === date.getDate();
 };
 
 const getNextDate = (date: Date) => {
 	const now = new Date();
 	const today = new Date();
 	const week = 1000 * 3600 * 24 * 7;
-	const inOneWeek = new Date(
-		now.getFullYear(),
-		now.getMonth(),
-		now.getDate() + 8,
-	);
+	const inOneWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 8);
 	const difference = Math.floor((date.getTime() - today.getTime()) / week);
-	return date > inOneWeek
-		? difference === 1
-			? 'In einer Woche'
-			: `In ${difference} Wochen`
-		: isToday(date)
-		? `Heute`
-		: isTomorrow(date)
-		? 'Morgen'
-		: `Nächsten ${days[date.getDay()]}`;
+	return date > inOneWeek ? (difference === 1 ? 'In einer Woche' : `In ${difference} Wochen`) : isToday(date) ? `Heute` : isTomorrow(date) ? 'Morgen' : `Nächsten ${days[date.getDay()]}`;
 };
 
-const days = [
-	'Sonntag',
-	'Montag',
-	'Dienstag',
-	'Mitwoch',
-	'Donnerstag',
-	'Freitag',
-	'Samstag',
-];
+const days = ['Sonntag', 'Montag', 'Dienstag', 'Mitwoch', 'Donnerstag', 'Freitag', 'Samstag'];

@@ -1,5 +1,4 @@
 import { Button, Grid, Group, Modal, Select, Title } from '@mantine/core';
-import { DatePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import 'dayjs/locale/de-ch';
 import { generateSelectDataWeekDays } from '../../helpers/time/get-week-days';
@@ -16,9 +15,8 @@ export const PlanCreateModal = ({ opened, closeModal, subjectId }: Props) => {
 	const utils = trpc.useContext();
 	const form = useForm<FormType>({
 		initialValues: {
-			name: 'Frühlingssemester 2023',
-			start: generateStart(),
-			end: generateEnd(),
+			semesterId: '2023-01',
+			day: 1,
 		},
 	});
 
@@ -55,34 +53,16 @@ export const PlanCreateModal = ({ opened, closeModal, subjectId }: Props) => {
 		>
 			<form onSubmit={form.onSubmit(handleSubmit)}>
 				<Grid>
-					<Grid.Col span={6}>
-						<DatePicker
-							locale='de-ch'
-							inputFormat='DD. MMM YYYY'
-							{...form.getInputProps('start')}
-							label='Start'
-						/>
-					</Grid.Col>
-
-					<Grid.Col span={6}>
-						<DatePicker
-							locale='de-ch'
-							inputFormat='DD. MMM YYYY'
-							{...form.getInputProps('end')}
-							label='Ende'
-						/>
-					</Grid.Col>
-
 					<Grid.Col span={12}>
 						<Select
 							label='Name'
-							{...form.getInputProps('name')}
+							{...form.getInputProps('semesterId')}
 							placeholder='Bitte Namen auswählen'
 							data={[
-								'Frühlingssemester 2023',
-								'Herbstsemester 2023',
-								'Frühlingssemester 2024',
-								'Herbstsemester 2024',
+								{ label: 'Frühlingssemester 2023', value: '2023-01' },
+								{ label: 'Herbstsemester 2023', value: '2023-02' },
+								{ label: 'Frühlingssemester 2024', value: '2024-01' },
+								{ label: 'Herbstsemester 2024', value: '2024-02' },
 							]}
 						></Select>
 					</Grid.Col>
@@ -111,10 +91,8 @@ export const PlanCreateModal = ({ opened, closeModal, subjectId }: Props) => {
 };
 
 type FormType = {
-	start: Date;
-	end: Date;
 	day?: number;
-	name: string;
+	semesterId: string;
 };
 
 const generateStart = () => {

@@ -15,7 +15,7 @@ import { PlanCreateModal } from '../../components/plan/create-modal';
 import { PlanItem, PlanItemMapperProps } from '../../components/plan/item';
 import { PlansSidebar } from '../../components/plan/sidebar';
 import { PlanTitle } from '../../components/plan/title';
-import { vacations } from '../../constants/vacations';
+import { vacationDefinitions } from '../../constants/vacations';
 import { BasicLayout } from '../../layout/basic';
 import { useAuthStore } from '../../stores/auth-store';
 import { trpc } from '../../utils/trpc';
@@ -43,18 +43,18 @@ const Plan: NextPage = () => {
 	const nextLessonId = planItems
 		?.filter((x) => x.date.getTime() >= today.getTime())
 		.sort((a, b) => a.date.getTime() - b.date.getTime())[0]?.id;
-	const nextVacationStart = vacations
+	const nextVacationStart = vacationDefinitions
 		.filter(
 			(x) => x.start.getTime() >= today.getTime() + 1000 * 60 * 60 * 24 * 3,
 		)
 		.sort((a, b) => a.start.getTime() - b.start.getTime())[0]
 		?.start.getTime();
-	const currentlyInVacation = vacations.some(
+	const currentlyInVacation = vacationDefinitions.some(
 		(v) =>
 			v.start.getTime() <= today.getTime() + 1000 * 60 * 60 * 24 * 3 &&
 			v.end.getTime() >= today.getTime() - 1000 * 60 * 60 * 24,
 	);
-	const nextVacationEnd = vacations
+	const nextVacationEnd = vacationDefinitions
 		.filter((x) => x.end.getTime() >= today.getTime() - 1000 * 60 * 60 * 24)
 		.sort((a, b) => a.end.getTime() - b.end.getTime())[0]
 		?.end.getTime();
@@ -73,7 +73,7 @@ const Plan: NextPage = () => {
 				<Container>
 					<Group position='apart' pb='md'>
 						<PlanTitle subject={subject} />
-						{planItems?.length === 0 ? (
+						{planItems?.length !== 0 ? (
 							role === 'teacher' && (
 								<>
 									<Button variant='light' onClick={createModal.open}>
@@ -124,7 +124,7 @@ const Plan: NextPage = () => {
 								})) as PlanItemMapperProps[]
 							)
 								.concat(
-									vacations.map((vacation) => ({
+									vacationDefinitions.map((vacation) => ({
 										type: 'vacation',
 										props: {
 											...vacation,

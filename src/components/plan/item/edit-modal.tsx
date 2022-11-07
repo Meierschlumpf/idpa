@@ -1,13 +1,4 @@
-import {
-	Button,
-	Group,
-	Modal,
-	Stack,
-	Text,
-	Textarea,
-	TextInput,
-	Title,
-} from '@mantine/core';
+import { Button, Group, Modal, Stack, Text, Textarea, TextInput, Title } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useEffect } from 'react';
 import { trpc } from '../../../utils/trpc';
@@ -81,6 +72,7 @@ export const PlanItemEditModal = ({ item, opened, closeModal }: Props) => {
 			{
 				onSuccess() {
 					utils.planItem.getAll.invalidate();
+					utils.planItem.getByPlanId.invalidate();
 					utils.planItem.getBySubjectId.invalidate();
 				},
 			},
@@ -89,12 +81,7 @@ export const PlanItemEditModal = ({ item, opened, closeModal }: Props) => {
 	};
 
 	return (
-		<Modal
-			size='xl'
-			title={<Title order={3}>Lektion bearbeiten</Title>}
-			opened={opened}
-			onClose={onClose}
-		>
+		<Modal size='xl' title={<Title order={3}>Lektion bearbeiten</Title>} opened={opened} onClose={onClose}>
 			<Stack>
 				<Stack spacing={4}>
 					<Text weight={500} size='sm'>
@@ -116,21 +103,12 @@ export const PlanItemEditModal = ({ item, opened, closeModal }: Props) => {
 				</Stack>
 				<form onSubmit={form.onSubmit(handleSubmit)}>
 					<TextInput {...form.getInputProps('title')} label='Thema' />
-					<Textarea
-						{...form.getInputProps('description')}
-						label='Beschreibung'
-					/>
+					<Textarea {...form.getInputProps('description')} label='Beschreibung' />
 					<Stack spacing={4}>
 						<Text weight={500} size='sm'>
 							Badges
 						</Text>
-						<BadgeList
-							mode='write'
-							activeBadges={form.values.badges}
-							handleSwitch={handleSwitch}
-							handleAddition={handleAddition}
-							handleRemoval={handleRemoval}
-						/>
+						<BadgeList mode='write' activeBadges={form.values.badges} handleSwitch={handleSwitch} handleAddition={handleAddition} handleRemoval={handleRemoval} />
 					</Stack>
 					<Group position='right'>
 						<Button variant='subtle' color='gray' onClick={onClose}>

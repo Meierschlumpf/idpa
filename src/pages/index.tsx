@@ -4,8 +4,7 @@ import {
 	Group,
 	ScrollArea,
 	Stack,
-	Title,
-	useMantineTheme,
+	Title
 } from '@mantine/core';
 import { useScrollIntoView } from '@mantine/hooks';
 import type { NextPage } from 'next';
@@ -18,7 +17,6 @@ import { BasicLayout } from '../layout/basic';
 import { trpc } from '../utils/trpc';
 
 const Home: NextPage = () => {
-	const theme = useMantineTheme();
 	const { data: planItems } = trpc.planItem.getAll.useQuery();
 	const { data: subjects } = trpc.subject.getAll.useQuery();
 	const { scrollIntoView, targetRef, scrollableRef } = useScrollIntoView({
@@ -27,7 +25,7 @@ const Home: NextPage = () => {
 
 	useEffect(() => {
 		scrollIntoView();
-	}, []);
+	}, [scrollIntoView]);
 
 	const now = new Date();
 	const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());

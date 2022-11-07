@@ -15,7 +15,7 @@ import { useMemo } from 'react';
 import { PlanItem, PlanItemMapperProps } from '../../../components/plan/item';
 import { PlansSidebar } from '../../../components/plan/sidebar';
 import { PlanTitle } from '../../../components/plan/title';
-import { vacations } from '../../../constants/vacations';
+import { vacationDefinitions } from '../../../constants/vacations';
 import { BasicLayout } from '../../../layout/basic';
 import { useAuthStore } from '../../../stores/auth-store';
 import { trpc } from '../../../utils/trpc';
@@ -29,7 +29,9 @@ const SemesterPlan: NextPage = () => {
 
 	const inSpecVacations = useMemo(() => {
 		if (!plan) return [];
-		return vacations.filter((x) => x.end >= plan.start && x.start <= plan.end);
+		return vacationDefinitions.filter(
+			(x) => x.end >= plan.start && x.start <= plan.end,
+		);
 	}, [plan]);
 
 	const now = new Date();
@@ -66,7 +68,7 @@ const SemesterPlan: NextPage = () => {
 			<BasicLayout sidebarContent={<PlansSidebar />}>
 				<Container>
 					<Group position='apart' pb='md'>
-						<PlanTitle subject={subject} planName={plan?.name} />
+						<PlanTitle subject={subject} semester={plan?.name} />
 						<Button
 							onClick={() => scrollIntoView()}
 							variant='light'
@@ -148,15 +150,16 @@ const useSemesterPlan = () => {
 				enabled: !!subjectName,
 			},
 		);
-	const { data: plan, ...planQuery } = trpc.plan.getByNameAndSubjectId.useQuery(
-		{
-			name: semester,
-			subjectId: subject?.id ?? '',
-		},
-		{
-			enabled: !!subject && !!semester,
-		},
-	);
+	const { data: plan, ...planQuery } =
+		trpc.plan.getBySemesterAndSubjectId.useQuery(
+			{
+				semester: semester,
+				subjectId: subject?.id ?? '',
+			},
+			{
+				enabled: !!subject && !!semester,
+			},
+		);
 	const { data: lessons, ...lessonsQuery } = trpc.planItem.getByPlanId.useQuery(
 		{ planId: plan?.id ?? '' },
 		{

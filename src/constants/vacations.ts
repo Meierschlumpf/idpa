@@ -1,4 +1,4 @@
-export const vacations = [
+export const vacationDefinitions = [
 	{
 		start: new Date('2022-07-04'),
 		end: new Date('2022-08-13'),

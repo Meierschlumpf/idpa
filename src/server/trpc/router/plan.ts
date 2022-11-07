@@ -1,5 +1,6 @@
+import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { vacations } from '../../../constants/vacations';
+import { vacationDefinitions } from '../../../constants/vacations';
 import { publicProcedure, router } from '../trpc';
 
 export const planRouter = router({
@@ -7,59 +8,53 @@ export const planRouter = router({
 		.input(
 			z.object({
 				subjectId: z.string(),
-				name: z.string(),
-				start: z.date(),
-				end: z.date(),
+				semesterId: z.string(),
 				day: z.number(),
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
 			const planCount = await ctx.prisma.plan.count({
 				where: {
-					OR: [
-						{
-							subjectId: input.subjectId,
-							start: {
-								gt: input.start,
-								lt: input.end,
-							},
-						},
-						{
-							subjectId: input.subjectId,
-							end: {
-								gt: input.start,
-								lt: input.end,
-							},
-						},
-					],
+					subjectId: input.subjectId,
+					semesterId: input.semesterId,
 				},
 			});
-			if (planCount >= 1) throw new Error('Plan already exists!');
+			if (planCount >= 1) throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'Plan already exists!',
+				cause: 'PLAN_ALREADY_EXISTS'
+			});
 
 			const plan = await ctx.prisma.plan.create({
 				data: {
-					start: input.start,
-					end: input.end,
 					day: input.day,
 					subjectId: input.subjectId,
-					name: input.name,
+					semesterId: input.semesterId,
 				},
 			});
 
-			const dayOfStart = input.start.getDay();
+			const semester = await ctx.prisma.semster.findFirst({
+				where: {
+					id: input.semesterId,
+				},
+			});
+
+			if (!semester) throw new Error('Semester not found!');
+
+			const dayOfStart = semester.start.getDay();
 			const difference = (input.day + 7 - dayOfStart) % 7;
 			let nextDay = new Date(
-				input.start.getFullYear(),
-				input.start.getMonth(),
-				input.start.getDate() + difference,
+				semester.start.getFullYear(),
+				semester.start.getMonth(),
+				semester.start.getDate() + difference,
 				12,
 				0,
 				0,
 			);
 
-			while (nextDay.getTime() <= input.end.getTime()) {
+			while (nextDay.getTime() <= semester.end.getTime()) {
 				if (
-					!vacations.some(
+					!vacationDefinitions.some(
 						(v) =>
 							v.start.getTime() <= nextDay.getTime() &&
 							v.end.getTime() >= nextDay.getTime(),
@@ -74,22 +69,44 @@ export const planRouter = router({
 				}
 				nextDay = getNextDate(nextDay);
 			}
+
+			return plan;
 		}),
-	getByNameAndSubjectId: publicProcedure
+	getBySemesterAndSubjectId: publicProcedure
 		.input(
 			z.object({
-				name: z.string(),
+				semester: z.string(),
 				subjectId: z.string(),
 			}),
 		)
-		.query(({ ctx, input }) => {
-			return ctx.prisma.plan.findFirst({
+		.query(async ({ ctx, input }) => {
+			return await ctx.prisma.plan.findFirst({
 				where: {
-					name: input.name,
+					semesterId: input.semester,
 					subjectId: input.subjectId,
 				},
 			});
 		}),
+	getById: publicProcedure
+		.input(z.object({
+			id: z.string()
+		}))
+		.query(async ({ctx, input}) => {
+			const plan = ctx.prisma.plan.findFirst({
+				where: {
+					id: input.id
+				},
+				include: {
+					subject: true,
+					semester: true,
+				}
+			});
+			if (plan) return plan;
+			throw new TRPCError({
+				code: 'NOT_FOUND',
+				message: `Plan with id ${input.id} has not been found`
+			})
+		})
 });
 
 const getNextDate = (lastDate: Date) => {

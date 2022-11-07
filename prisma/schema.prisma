@@ -24,14 +24,20 @@ model Subject {
 
 model Plan {
   id                String @id @default(cuid())
-  start             DateTime
-  end               DateTime
-  name              String
   day               Int
   subjectId         String
+  semesterId         String
   subject           Subject @relation(fields: [subjectId], references: [id])
+  semester           Semster @relation(fields: [semesterId], references: [id])
   items             PlanItem[]
 
+}
+
+model Semster {
+  id                String @id
+  start             DateTime
+  end               DateTime
+  plans             Plan[]
 }
 
 model PlanItem {
