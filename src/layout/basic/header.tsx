@@ -1,6 +1,7 @@
 import { Box, Group, Header, Select, Text } from '@mantine/core';
 import { IconSchool } from '@tabler/icons';
 import { useAuthStore } from '../../stores/auth-store';
+import { trpc } from '../../utils/trpc';
 import { StudentHeaderNavigation } from './header/variant/student';
 import { TeacherHeaderNavigation } from './header/variant/teacher';
 
@@ -12,6 +13,22 @@ interface BasicHeaderProps {
 export const BasicHeader = ({}: BasicHeaderProps) => {
   const role = useAuthStore((x) => x.role);
   const setRole = useAuthStore((x) => x.setRole);
+  const { mutateAsync } = trpc.activeRole.update.useMutation();
+
+  const handleRoleChange = async (newRole: 'student' | 'teacher' | null) => {
+    if (!newRole) return;
+
+    const previousRole = role;
+    setRole(newRole);
+    await mutateAsync(
+      { name: newRole },
+      {
+        onError() {
+          setRole(previousRole);
+        },
+      }
+    );
+  };
 
   return (
     <Box pb={60}>
@@ -29,7 +46,7 @@ export const BasicHeader = ({}: BasicHeaderProps) => {
           </Group>
 
           <Group>
-            <Select withinPortal value={role} data={['student', 'teacher']} onChange={(v) => setRole(v ?? 'student')} />
+            <Select withinPortal value={role} data={['student', 'teacher']} onChange={handleRoleChange} />
           </Group>
         </Group>
       </Header>

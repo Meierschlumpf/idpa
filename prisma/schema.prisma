@@ -41,6 +41,10 @@ model ReferenceMaterial {
   plan   Plan   @relation(fields: [planId], references: [id])
 }
 
+model ActiveRole {
+  name String @id
+}
+
 model Semster {
   id    String   @id
   start DateTime
