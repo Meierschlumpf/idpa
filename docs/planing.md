@@ -12,6 +12,12 @@ Nächste steps, wenn abgeschlossen:
 
 - Hausaufgaben hinzufügen
 - Aufgaben hinzufügen
-- Beschreibung Lektion vielfältiger machen
+- Beschreibung Lektion vielfältiger machen (Referenzen auf Referenzmaterial)
+- Referenzmaterial hinzufügen (Links)
+- Rolle von aktuellem Benutzer speichern.
+- Aktuelle Tasks auflisten auf Home für Schüler.
+- Schnelle Aktionen hinzufügen für Lehrer.
+- P&D Plan?
+- Datum anzeigen neben Kalenderwoche
 
 Add semester object (start, end, name) --> can be selected on generation of plan

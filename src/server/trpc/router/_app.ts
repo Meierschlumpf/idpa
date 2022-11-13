@@ -2,6 +2,7 @@
 import { router } from '../trpc';
 import { planRouter } from './plan';
 import { planItemRouter } from './planitem';
+import { referenceMaterialRouter } from './referenceMaterial';
 import { semesterRouter } from './semester';
 import { subjectRouter } from './subject';
 
@@ -9,7 +10,8 @@ export const appRouter = router({
 	subject: subjectRouter,
 	planItem: planItemRouter,
 	plan: planRouter,
-	semester: semesterRouter
+	semester: semesterRouter,
+	referenceMaterial: referenceMaterialRouter
 });
 
 // export type definition of API

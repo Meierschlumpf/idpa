@@ -1,56 +1,59 @@
-import { Container, ScrollArea } from '@mantine/core';
+import { Box, Container, Group, NavLink, ScrollArea, Title } from '@mantine/core';
+import { NextLink } from '@mantine/next';
+import { Icon123, IconBooks, IconExternalLink } from '@tabler/icons';
 import { ErrorOverlay } from '../../../../components/overlays/error';
 import { LoadOverlay } from '../../../../components/overlays/load';
 import { NoItemsOverlay } from '../../../../components/overlays/no-items';
+import { SubjectPlanAside } from '../../../../components/pages/plans/[param]/[subjectName]/aside';
 import { PlanTitle } from '../../../../components/plan/title';
 import { BasicLayout } from '../../../../layout/basic';
 import { trpc } from '../../../../utils/trpc';
 
 interface SubjectPlanPageProps {
-	semesterId: string;
-	subjectName: string;
+  semesterId: string;
+  subjectName: string;
 }
 
 export const SubjectPlanPage = ({ semesterId, subjectName }: SubjectPlanPageProps) => {
-	const { data: semester, ...semesterQuery } = trpc.semester.getById.useQuery({
-		id: semesterId,
-	});
-	const { data: subject, ...subjectQuery } = trpc.subject.getByRouteName.useQuery({
-		routeName: subjectName,
-	});
+  const { data: semester, ...semesterQuery } = trpc.semester.getById.useQuery({
+    id: semesterId,
+  });
+  const { data: subject, ...subjectQuery } = trpc.subject.getByRouteName.useQuery({
+    routeName: subjectName,
+  });
 
-	const isLoading = subjectQuery.isLoading || semesterQuery.isLoading;
-	const isError = subjectQuery.isError || semesterQuery.isError;
+  const isLoading = subjectQuery.isLoading || semesterQuery.isLoading;
+  const isError = subjectQuery.isError || semesterQuery.isError;
 
-	return (
-		<>
-			<BasicLayout>
-				<Container>
-					<PlanTitle semester={semester?.id} />
-					<ScrollArea
-						styles={{
-							viewport: {
-								maxHeight: 'calc(100vh - 300px)',
-								width: 'calc(100% - 14px)',
-							},
-						}}
-						mt='xl'
-					>
-						<LoadOverlay visible={isLoading} />
-						<ErrorOverlay visible={isError} />
-						<NoItemsOverlay visible={!isLoading && !isError /*&& items?.length === 0*/} />
-						{/*{items && (
+  return (
+    <>
+      <BasicLayout asideContent={semester && subject && <SubjectPlanAside semester={semester.id} subjectId={subject.id} />}>
+        <Container>
+          <PlanTitle semester={semester?.id} />
+          <ScrollArea
+            styles={{
+              viewport: {
+                maxHeight: 'calc(100vh - 300px)',
+                width: 'calc(100% - 14px)',
+              },
+            }}
+            mt="xl"
+          >
+            <LoadOverlay visible={isLoading} />
+            <ErrorOverlay visible={isError} />
+            <NoItemsOverlay visible={!isLoading && !isError /*&& items?.length === 0*/} />
+            {/*{items && (
 							<SemesterSubjectPlanList
 								lessons={items}
 								vacations={vacations}
 								subject={subject}
 							/>
 						)}*/}
-					</ScrollArea>
-				</Container>
-			</BasicLayout>
-		</>
-	);
+          </ScrollArea>
+        </Container>
+      </BasicLayout>
+    </>
+  );
 };
 
 /*

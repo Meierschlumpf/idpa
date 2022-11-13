@@ -15,53 +15,61 @@ datasource db {
 }
 
 model Subject {
-  id                String @id @default(cuid())
-  name              String
-  routeName         String
-  icon              String
-  plans             Plan[]
+  id        String @id @default(cuid())
+  name      String
+  routeName String
+  icon      String
+  plans     Plan[]
 }
 
 model Plan {
-  id                String @id @default(cuid())
-  day               Int
-  subjectId         String
+  id                 String              @id @default(cuid())
+  day                Int
+  subjectId          String
   semesterId         String
-  subject           Subject @relation(fields: [subjectId], references: [id])
-  semester           Semster @relation(fields: [semesterId], references: [id])
-  items             PlanItem[]
+  subject            Subject             @relation(fields: [subjectId], references: [id])
+  semester           Semster             @relation(fields: [semesterId], references: [id])
+  items              PlanItem[]
+  referenceMaterials ReferenceMaterial[]
+}
 
+model ReferenceMaterial {
+  id     String @id @default(cuid())
+  name   String
+  link   String
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id])
 }
 
 model Semster {
-  id                String @id
-  start             DateTime
-  end               DateTime
-  plans             Plan[]
+  id    String   @id
+  start DateTime
+  end   DateTime
+  plans Plan[]
 }
 
 model PlanItem {
-  id                String @id @default(cuid())
-  date              DateTime
-  title             String?
-  description       String?
-  planId            String
-  badges            PlanItemBadge[]
-  plan              Plan @relation(fields: [planId], references: [id])
+  id          String          @id @default(cuid())
+  date        DateTime
+  title       String?
+  description String?
+  planId      String
+  badges      PlanItemBadge[]
+  plan        Plan            @relation(fields: [planId], references: [id])
 }
 
 model PlanItemBadge {
-  itemId            String
-  badgeId           String
-  evaluated         Boolean
-  item              PlanItem @relation(fields: [itemId], references: [id])
-  badge             PlanBadge @relation(fields: [badgeId], references: [id])
+  itemId    String
+  badgeId   String
+  evaluated Boolean
+  item      PlanItem  @relation(fields: [itemId], references: [id])
+  badge     PlanBadge @relation(fields: [badgeId], references: [id])
 
   @@id([itemId, badgeId])
 }
 
 model PlanBadge {
-  id                String @id @default(cuid())
-  name              String
-  items            PlanItemBadge[]
+  id    String          @id @default(cuid())
+  name  String
+  items PlanItemBadge[]
 }
