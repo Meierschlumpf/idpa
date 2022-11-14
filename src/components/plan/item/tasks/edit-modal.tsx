@@ -56,7 +56,7 @@ export const TaskEditModal = ({ opened, closeModal, planId, planItemId, task }: 
         taskId: task.id,
         materials: values.materialIds,
         description: !values.description || values.description.trim().length === 0 ? null : values.description,
-        ...(values as unknown as any),
+        title: values.title,
       },
       {
         onSuccess() {

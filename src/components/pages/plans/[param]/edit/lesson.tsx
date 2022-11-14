@@ -97,7 +97,7 @@ export const PlanEditLessonItem = ({ planId, item, targetRef, isNext }: PlanEdit
         )}
         <Group position="apart">
           <BadgeList mode="write" activeBadges={item.badges} handleSwitch={handleSwitch} handleAddition={handleAddition} handleRemoval={handleRemoval} />
-          <EditPlanItemTasks planId={planId} planItemId={item.id} />
+          <EditPlanItemTasks planId={planId} planItem={item} />
         </Group>
       </Stack>
     </Card>
