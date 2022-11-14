@@ -39,6 +39,16 @@ model ReferenceMaterial {
   link   String
   planId String
   plan   Plan   @relation(fields: [planId], references: [id])
+  tasks  Task[]
+}
+
+model Task {
+  id          String              @id @default(cuid())
+  title       String
+  description String?
+  planItemId  String
+  planItem    PlanItem            @relation(fields: [planItemId], references: [id])
+  materials   ReferenceMaterial[]
 }
 
 model ActiveRole {
@@ -59,6 +69,7 @@ model PlanItem {
   description String?
   planId      String
   badges      PlanItemBadge[]
+  tasks       Task[]
   plan        Plan            @relation(fields: [planId], references: [id])
 }
 

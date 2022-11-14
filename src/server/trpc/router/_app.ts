@@ -6,6 +6,7 @@ import { planItemRouter } from './planitem';
 import { referenceMaterialRouter } from './referenceMaterial';
 import { semesterRouter } from './semester';
 import { subjectRouter } from './subject';
+import { taskRouter } from './task';
 
 export const appRouter = router({
   subject: subjectRouter,
@@ -14,6 +15,7 @@ export const appRouter = router({
   semester: semesterRouter,
   referenceMaterial: referenceMaterialRouter,
   activeRole: activeRoleRouter,
+  task: taskRouter,
 });
 
 // export type definition of API

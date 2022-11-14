@@ -1,22 +1,20 @@
-import { Button, Card, Group, Stack, Text, Tooltip, useMantineTheme } from '@mantine/core';
+import { Card, Group, Stack, Text, useMantineTheme } from '@mantine/core';
 import { RefObject } from 'react';
-import { IconCheckbox, IconHomeCheck } from '@tabler/icons';
 import { showSuccessNotification } from '../../../../../helpers/notifications/success';
 import { AppRouterTypes, trpc } from '../../../../../utils/trpc';
 import { BadgeList } from '../../../../plan/item/badge/list';
 import { PlanItemEditMenu } from '../../../../plan/item/edit-menu';
 import { PlanLessonItemNextText } from '../../../../plan/item/next';
 import { PlanLessonItemTitle } from '../../../../plan/item/title';
-import { PlanItemTaskBase } from '../../../../plan/item/tasks';
 import { EditPlanItemTasks } from './tasks';
-import { useDisclosure } from '@mantine/hooks';
 
 export interface PlanEditLessonItemProps {
+  planId: string;
   item: Exclude<AppRouterTypes['planItem']['getByPlanId']['output'], undefined>[0];
   targetRef?: RefObject<HTMLDivElement>;
   isNext?: boolean;
 }
-export const PlanEditLessonItem = ({ item, targetRef, isNext }: PlanEditLessonItemProps) => {
+export const PlanEditLessonItem = ({ planId, item, targetRef, isNext }: PlanEditLessonItemProps) => {
   const theme = useMantineTheme();
   const utils = trpc.useContext();
   const addBadge = trpc.planItem.addBadge.useMutation();
@@ -99,7 +97,7 @@ export const PlanEditLessonItem = ({ item, targetRef, isNext }: PlanEditLessonIt
         )}
         <Group position="apart">
           <BadgeList mode="write" activeBadges={item.badges} handleSwitch={handleSwitch} handleAddition={handleAddition} handleRemoval={handleRemoval} />
-          <EditPlanItemTasks />
+          <EditPlanItemTasks planId={planId} planItemId={item.id} />
         </Group>
       </Stack>
     </Card>

@@ -1,13 +1,22 @@
-import { ActionIcon, Button, Divider, Group, Modal, NavLink, Stack, Text, Title, Tooltip } from '@mantine/core';
-import { IconExternalLink, IconX } from '@tabler/icons';
+import { Button, Divider, Group, Modal, Stack, Title } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { BaseModalProps } from '../../../../../types/base-modal-props';
 import { trpc } from '../../../../../utils/trpc';
+import { TaskCreateModal } from '../../../../plan/item/tasks/create-modal';
+import { EditTaskItem } from './edit-task-item';
 
-interface TaskEditListModalProps extends BaseModalProps {}
+interface TaskEditListModalProps extends BaseModalProps {
+  planId: string;
+  planItemId: string;
+}
 
-export const TaskEditListModal = ({ opened, closeModal }: TaskEditListModalProps) => {
+export const TaskEditListModal = ({ opened, closeModal, planId, planItemId }: TaskEditListModalProps) => {
+  const [createModalOpened, createModal] = useDisclosure(false);
   const utils = trpc.useContext();
   //const { mutateAsync } = trpc.referenceMaterial.create.useMutation();
+  const { data: tasks } = trpc.task.getByPlanItemId.useQuery({
+    planItemId,
+  });
 
   const onClose = () => {
     closeModal();
@@ -36,36 +45,16 @@ export const TaskEditListModal = ({ opened, closeModal }: TaskEditListModalProps
   return (
     <Modal size="lg" opened={opened} onClose={onClose} title={<Title order={3}>Aufträge</Title>}>
       <Group position="center">
-        <Button variant="subtle" color="gray">
+        <Button onClick={createModal.open} variant="subtle" color="gray">
           Neuer Auftrag
         </Button>
+        <TaskCreateModal opened={createModalOpened} closeModal={createModal.close} planId={planId} planItemId={planItemId} />
       </Group>
       <Stack pt="md">
         <Divider />
-        <Group position="apart" style={{ flexWrap: 'nowrap' }} align="start">
-          <Title order={1} style={{ width: 100 }}>
-            1.
-          </Title>
-          <Stack>
-            <Group position="apart">
-              <Title order={5}>Auftrag xyz</Title>
-              <Tooltip label="Auftrag entfernen">
-                <ActionIcon>
-                  <IconX stroke={1.5} size={16} />
-                </ActionIcon>
-              </Tooltip>
-            </Group>
-            <Text>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto fugit dolorem repudiandae ducimus quia magnam dolores, tempore est rem et labore tenetur reiciendis vitae consectetur hic?
-              Eius, debitis amet! Reiciendis?
-            </Text>
-            <Group>
-              <NavLink icon={<IconExternalLink />} label="OneNote" style={{ width: 'auto' }} />
-              <NavLink icon={<IconExternalLink />} label="OneNote" style={{ width: 'auto' }} />
-            </Group>
-          </Stack>
-        </Group>
-        <Divider />
+        {tasks?.map((t, i) => (
+          <EditTaskItem key={t.id} task={t} position={i + 1} planItemId={planItemId} planId={planId} />
+        ))}
       </Stack>
     </Modal>
   );
