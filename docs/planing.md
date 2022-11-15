@@ -15,5 +15,5 @@ Nächste steps, wenn abgeschlossen:
 - Beschreibung Lektion vielfältiger machen (Referenzen auf Referenzmaterial)
 - Aktuelle Tasks auflisten auf Home für Schüler.
 - Schnelle Aktionen hinzufügen für Lehrer.
-- P&D Plan?
 - Datum anzeigen neben Kalenderwoche
+- P&D Plan?

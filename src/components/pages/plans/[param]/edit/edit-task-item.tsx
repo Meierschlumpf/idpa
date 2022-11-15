@@ -20,7 +20,7 @@ export const EditTaskItem = ({ position, task, planItemId, planId }: EditTaskIte
   return (
     <>
       <Group position="apart" style={{ flexWrap: 'nowrap' }} align="start">
-        <Title order={1} style={{ width: 100 }}>
+        <Title order={2} style={{ width: 100 }}>
           {position}.
         </Title>
         <Stack style={{ flex: 1 }}>

@@ -54,6 +54,7 @@ export const TaskCreateModal = ({ opened, closeModal, planId, planItemId }: Task
             message: 'Der Auftrag wurde erfolgreich hinzugefügt!',
           });
           utils.task.getByPlanItemId.invalidate({ planItemId });
+          utils.planItem.getByPlanId.invalidate({ planId });
           onClose();
         },
       }
