@@ -1,19 +1,18 @@
 import { Center, ScrollArea, Stack, Text } from '@mantine/core';
 import { useScrollIntoView } from '@mantine/hooks';
-import { RefObject } from 'react';
+import { MutableRefObject, RefObject } from 'react';
 import { vacationDefinitions } from '../../../../../constants/vacations';
 import { AppRouterTypes, trpc } from '../../../../../utils/trpc';
 import { PlanEditItem, PlanEditItemMapperProps } from './item';
 
 interface PlanEditListProps {
   plan: Exclude<AppRouterTypes['plan']['getById']['output'], null | undefined>;
+  scrollableRef: MutableRefObject<null>;
+  targetRef: MutableRefObject<HTMLElement>;
 }
 
-export const PlanEditList = ({ plan }: PlanEditListProps) => {
+export const PlanEditList = ({ plan, scrollableRef, targetRef }: PlanEditListProps) => {
   const { data: planItems } = trpc.planItem.getByPlanId.useQuery({ planId: plan.id });
-  const { scrollIntoView, targetRef, scrollableRef } = useScrollIntoView({
-    duration: 100,
-  });
 
   const vacations = vacationDefinitions.filter((x) => x.end >= plan.semester.start && x.start <= plan.semester.end);
 

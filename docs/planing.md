@@ -12,5 +12,4 @@ Nächste steps, wenn abgeschlossen:
 - Header überarbeiten
 - Sidebar hinzufügen für Pläne
 - Start und Endzeit hinzufügen für Plan (Lektionsstart & -Ende)
-- Nächster Termin scroll hinzufügen
 - Feiertage / Projektwoche

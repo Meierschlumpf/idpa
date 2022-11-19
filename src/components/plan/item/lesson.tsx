@@ -73,7 +73,6 @@ export const PlanLessonItem = ({ subject, item, showKw = true, targetRef, isNext
         borderColor: isNext ? theme.colors.blue[5] : undefined,
         overflow: 'visible',
       }}
-      ref={targetRef as RefObject<HTMLDivElement>}
       shadow="sm"
       p="lg"
       radius="md"
@@ -90,6 +89,7 @@ export const PlanLessonItem = ({ subject, item, showKw = true, targetRef, isNext
         {isNext && (
           <>
             <Text
+              ref={targetRef as RefObject<HTMLDivElement>}
               style={{
                 color: theme.colors.blue[5],
               }}

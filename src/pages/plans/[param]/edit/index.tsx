@@ -1,5 +1,5 @@
 import { Button, Container, Group, Stack, Text, Title } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { useDisclosure, useScrollIntoView } from '@mantine/hooks';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { EditPlanAside } from '../../../../components/pages/plans/[param]/edit/aside';
@@ -19,6 +19,10 @@ const Page: NextPage = () => {
   const { data: items, ...itemsQuery } = trpc.planItem.getByPlanId.useQuery({ planId: id }, { enabled: !!id });
   const [newThemeModalOpened, newThemeModal] = useDisclosure(false);
   const role = useAuthStore((x) => x.role);
+  const { scrollIntoView, targetRef, scrollableRef } = useScrollIntoView({
+    duration: 500,
+    cancelable: false,
+  });
 
   if (isError || itemsQuery.isError || role === 'student') {
     return <Page404 />;
@@ -39,7 +43,7 @@ const Page: NextPage = () => {
           </Group>
 
           <Group align="center">
-            <Button variant="subtle" color="gray">
+            <Button variant="subtle" color="gray" onClick={() => scrollIntoView({ alignment: 'center' })}>
               Nächster Termin
             </Button>
             <Button onClick={newThemeModal.open}>Neues Thema</Button>
@@ -48,7 +52,7 @@ const Page: NextPage = () => {
         </Group>
         <Group></Group>
 
-        {plan && <PlanEditList plan={plan} />}
+        {plan && <PlanEditList targetRef={targetRef} scrollableRef={scrollableRef} plan={plan} />}
       </Container>
     </BasicLayout>
   );

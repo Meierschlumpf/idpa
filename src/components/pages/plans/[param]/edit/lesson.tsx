@@ -98,6 +98,7 @@ export const PlanEditLessonItem = ({ planId, item, targetRef, isNext }: PlanEdit
         {isNext && (
           <>
             <Text
+              ref={targetRef}
               style={{
                 color: theme.colors.blue[5],
               }}

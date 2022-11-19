@@ -1,6 +1,4 @@
-import { Box, Container, Group, NavLink, ScrollArea, Title } from '@mantine/core';
-import { NextLink } from '@mantine/next';
-import { Icon123, IconBooks, IconExternalLink } from '@tabler/icons';
+import { Container, ScrollArea } from '@mantine/core';
 import { ErrorOverlay } from '../../../../components/overlays/error';
 import { LoadOverlay } from '../../../../components/overlays/load';
 import { NoItemsOverlay } from '../../../../components/overlays/no-items';

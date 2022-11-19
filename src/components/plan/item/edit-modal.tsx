@@ -2,7 +2,7 @@ import { Button, Group, Modal, Stack, Text, TextInput, Title } from '@mantine/co
 import { useForm } from '@mantine/form';
 import { Editor } from '@mantine/rte';
 import { useEffect, useMemo, useRef } from 'react';
-import RichTextEditor from '../../../pages/__test';
+import RichTextEditor from './rich-text-editor';
 import { AppRouterTypes, trpc } from '../../../utils/trpc';
 import { BadgeList } from './badge/list';
 import { PlanLessonItem } from './lesson';

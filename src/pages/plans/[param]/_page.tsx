@@ -1,6 +1,6 @@
-import { Container, ScrollArea } from '@mantine/core';
+import { Button, Container, Group, ScrollArea } from '@mantine/core';
 import { useScrollIntoView } from '@mantine/hooks';
-import { useEffect, useMemo } from 'react';
+import { RefObject, useEffect, useMemo } from 'react';
 import { ErrorOverlay } from '../../../components/overlays/error';
 import { LoadOverlay } from '../../../components/overlays/load';
 import { NoItemsOverlay } from '../../../components/overlays/no-items';
@@ -20,18 +20,25 @@ export const PlanPage = ({ semesterId }: PlanPageProps) => {
   const vacations = useVacations(semesterId);
   const { scrollIntoView, targetRef, scrollableRef } = useScrollIntoView({
     duration: 100,
+    cancelable: false,
   });
 
   useEffect(() => {
     if (isLoading || isError) return;
-    scrollIntoView();
+    scrollIntoView({ alignment: 'center' });
   }, [scrollIntoView, isLoading, isError]);
 
   return (
     <>
       <BasicLayout asideContent={<PlanAside semester={semesterId} />}>
         <Container>
-          <PlanTitle semester={semesterId} />
+          <Group position="apart" align="center">
+            <PlanTitle semester={semesterId} />
+
+            <Button variant="subtle" color="gray" onClick={() => scrollIntoView({ alignment: 'center' })}>
+              Nächster Termin
+            </Button>
+          </Group>
           <ScrollArea
             styles={{
               viewport: {
@@ -45,7 +52,7 @@ export const PlanPage = ({ semesterId }: PlanPageProps) => {
             <LoadOverlay visible={isLoading} />
             <ErrorOverlay visible={isError} />
             <NoItemsOverlay visible={!isLoading && !isError && items?.length === 0} />
-            {items && items.length !== 0 && <SemesterPlanList lessons={items} vacations={vacations} />}
+            {items && items.length !== 0 && <SemesterPlanList targetRef={targetRef as RefObject<HTMLDivElement>} lessons={items} vacations={vacations} />}
           </ScrollArea>
         </Container>
       </BasicLayout>
