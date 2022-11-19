@@ -5,10 +5,11 @@ import { AppRouterTypes } from '../../../utils/trpc';
 import { PlanItemEditModal } from './edit-modal';
 
 interface Props {
-  item: AppRouterTypes['planItem']['getBySemesterId']['output'][0];
+  planId: string;
+  item: Exclude<AppRouterTypes['planItem']['getByPlanId']['output'], undefined>[0];
 }
 
-export const PlanItemEditMenu = ({ item }: Props) => {
+export const PlanItemEditMenu = ({ planId, item }: Props) => {
   const [editModalOpened, editModal] = useDisclosure(false);
 
   return (
@@ -16,7 +17,7 @@ export const PlanItemEditMenu = ({ item }: Props) => {
       <ActionIcon onClick={editModal.open}>
         <IconPencil size={16} stroke={1.5} />
       </ActionIcon>
-      <PlanItemEditModal item={item} opened={editModalOpened} closeModal={editModal.close} />
+      <PlanItemEditModal planId={planId} item={item} opened={editModalOpened} closeModal={editModal.close} />
     </Group>
   );
 };

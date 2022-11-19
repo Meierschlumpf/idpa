@@ -24,7 +24,7 @@ const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { .
       withNormalizeCSS
       theme={{
         /** Put your mantine theme override here */
-        colorScheme: 'dark',
+        colorScheme: 'light',
       }}
     >
       <NotificationsProvider>

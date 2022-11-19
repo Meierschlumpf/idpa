@@ -2,6 +2,7 @@ import { PlanBadge } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { publicProcedure, router } from '../trpc';
+import { Delta } from 'quill';
 
 export const planItemRouter = router({
   getAll: publicProcedure.query(async ({ ctx }) => {

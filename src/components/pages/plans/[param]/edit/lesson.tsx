@@ -1,8 +1,10 @@
-import { Card, Group, Stack, Text, useMantineTheme } from '@mantine/core';
+import { Card, Group, Stack, Text, TypographyStylesProvider, useMantineTheme } from '@mantine/core';
 import { RefObject } from 'react';
 import { showSuccessNotification } from '../../../../../helpers/notifications/success';
 import { AppRouterTypes, trpc } from '../../../../../utils/trpc';
 import { BadgeList } from '../../../../plan/item/badge/list';
+import { ItemDescription } from '../../../../plan/item/description';
+import getHtml from '../../../../plan/item/dynamic-to-html-button';
 import { PlanItemEditMenu } from '../../../../plan/item/edit-menu';
 import { PlanLessonItemNextText } from '../../../../plan/item/next';
 import { PlanLessonItemTitle } from '../../../../plan/item/title';
@@ -88,11 +90,11 @@ export const PlanEditLessonItem = ({ planId, item, targetRef, isNext }: PlanEdit
         <Group position="apart" align="center">
           <PlanLessonItemTitle date={item.date} theme={item.title} />
 
-          <PlanItemEditMenu item={item} />
+          <PlanItemEditMenu item={item} planId={planId} />
         </Group>
         {item.description && (
           <Group>
-            <Text>{item.description}</Text>
+            <ItemDescription description={item.description} />
           </Group>
         )}
         <Group position="apart">

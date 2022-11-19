@@ -1,10 +1,12 @@
-import { Card, Group, Stack, Text, Title, useMantineTheme } from '@mantine/core';
+import { Card, Group, Stack, Text, Title, TypographyStylesProvider, useMantineTheme } from '@mantine/core';
 import { MutableRefObject, RefObject } from 'react';
 import { getWeekNumber } from '../../../helpers/time/get-week-number';
 import { AppRouterTypes, trpc } from '../../../utils/trpc';
 import { PlanItemTasks } from '../../pages/plans/[param]/tasks';
 import { TablerIconComponent } from '../../tablerIcon';
 import { BadgeList } from './badge/list';
+import { ItemDescription } from './description';
+import getHtml from './dynamic-to-html-button';
 import { PlanItemEditMenu } from './edit-menu';
 
 export interface PlanLessonItemProps {
@@ -100,11 +102,10 @@ export const PlanLessonItem = ({ subject, item, showKw = true, targetRef, isNext
               <Title order={4}>{subject.name}</Title>
             </Group>
           )}
-          {mode === 'write' && <PlanItemEditMenu item={item} />}
         </Group>
         {item.description && (
           <Group>
-            <Text>{item.description}</Text>
+            <ItemDescription description={item.description} />
           </Group>
         )}
         <Group position={item.badges.length === 0 ? 'right' : 'apart'}>

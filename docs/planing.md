@@ -12,7 +12,6 @@ Nächste steps, wenn abgeschlossen:
 
 - Hausaufgaben hinzufügen
 - Aufgaben hinzufügen
-- Beschreibung Lektion vielfältiger machen (Referenzen auf Referenzmaterial)
 - Aktuelle Tasks auflisten auf Home für Schüler.
 - Schnelle Aktionen hinzufügen für Lehrer.
 - Datum anzeigen neben Kalenderwoche

@@ -14,3 +14,15 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.mention {
+  padding: 2px;
+  background-color: #e7f5ff;
+  border-radius: 4px;
+  position: relative;
+}
+
+.mention:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}

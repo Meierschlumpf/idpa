@@ -1,20 +1,45 @@
-import { Button, Group, Modal, Stack, Text, Textarea, TextInput, Title } from '@mantine/core';
+import { Button, Group, Modal, Stack, Text, TextInput, Title } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { useEffect } from 'react';
+import { Editor } from '@mantine/rte';
+import { useEffect, useMemo, useRef } from 'react';
+import RichTextEditor from '../../../pages/__test';
 import { AppRouterTypes, trpc } from '../../../utils/trpc';
-import { PlanLessonItem } from './lesson';
 import { BadgeList } from './badge/list';
+import { PlanLessonItem } from './lesson';
 
 interface Props {
-  item: AppRouterTypes['planItem']['getBySemesterId']['output'][0];
+  planId: string;
+  item: Exclude<AppRouterTypes['planItem']['getByPlanId']['output'], undefined>[0];
   opened: boolean;
   closeModal: () => void;
 }
 
-export const PlanItemEditModal = ({ item, opened, closeModal }: Props) => {
+export const PlanItemEditModal = ({ planId, item, opened, closeModal }: Props) => {
   const { data: badges } = trpc.planItem.getBadges.useQuery();
+  const { data: materials } = trpc.referenceMaterial.getByPlanId.useQuery({ planId });
   const { mutateAsync } = trpc.planItem.update.useMutation();
   const utils = trpc.useContext();
+  const editorRef = useRef<Editor>();
+  const descriptionRef = useRef<string>();
+  const hasEditedRef = useRef<boolean>();
+
+  const mentions = useMemo(
+    () => ({
+      allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
+      mentionDenotationChars: ['#'],
+      source: (searchTerm: string, renderList: (values: { id: string; value: string }[]) => void, mentionChar: string) => {
+        const includesSearchTerm = materials?.filter((item) => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
+        renderList(
+          includesSearchTerm?.map((m) => ({
+            id: m.id,
+            value: m.name,
+          })) ?? []
+        );
+      },
+    }),
+    [materials]
+  );
+
   const form = useForm<FormType>({
     initialValues: {
       title: item.title ?? undefined,
@@ -96,8 +121,45 @@ export const PlanItemEditModal = ({ item, opened, closeModal }: Props) => {
         </Stack>
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput {...form.getInputProps('title')} label="Thema" />
-          <Textarea {...form.getInputProps('description')} label="Beschreibung" />
-          <Stack spacing={4}>
+          <Stack spacing={4} mt="sm">
+            <Text weight={500} size="sm">
+              Beschreibung
+            </Text>
+            <RichTextEditor
+              sx={{
+                '>div.quill': {
+                  height: 200,
+                  overflowY: 'auto',
+                  overflowX: 'visible',
+                },
+                '.ql-editor': {
+                  minHeight: '100%',
+                },
+              }}
+              mentions={mentions}
+              id="rte"
+              ref={editorRef}
+              controls={[
+                ['bold', 'italic', 'underline', 'clean'],
+                ['unorderedList', 'link'],
+              ]}
+              defaultValue={item.description ?? ''}
+              value={(() => {
+                return form.values.description?.length === 0 ? undefined : JSON.parse(form.values.description ?? item.description ?? '{}');
+              })()}
+              onChange={() => {
+                const current = JSON.stringify(editorRef.current?.editor?.getContents());
+                if (descriptionRef.current === current || (current === '{"ops":[{"insert":"\\n"}]}' && hasEditedRef.current === false && item.description)) {
+                  return;
+                }
+                console.log(current);
+                hasEditedRef.current = true;
+                descriptionRef.current = current;
+                form.setFieldValue('description', current);
+              }}
+            />
+          </Stack>
+          <Stack spacing={4} mt="sm">
             <Text weight={500} size="sm">
               Badges
             </Text>
