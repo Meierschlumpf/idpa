@@ -13,5 +13,4 @@ Nächste steps, wenn abgeschlossen:
 - Header überarbeiten
 - Start und Endzeit hinzufügen für Plan (Lektionsstart & -Ende)
 - Nächster Termin scroll hinzufügen
-- Ehemalige Seiten entfernen (/deutsch, /deutsch/2023-01 usw.)
 - Feiertage / Projektwoche
