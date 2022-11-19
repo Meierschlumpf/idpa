@@ -163,6 +163,49 @@ export const planItemRouter = router({
         subjectId: item.plan.subjectId,
       }));
     }),
+  getBySemesterAndSubjectId: publicProcedure
+    .input(
+      z.object({
+        semesterId: z.string(),
+        subjectId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const badges = await ctx.prisma.planBadge.findMany();
+      const badgesMap = badges.reduce((prev, curr) => {
+        prev.set(curr.id, curr);
+        return prev;
+      }, new Map<string, PlanBadge>());
+      const items = await ctx.prisma.planItem.findMany({
+        include: {
+          badges: true,
+          tasks: true,
+          plan: true,
+        },
+        orderBy: {
+          date: 'asc',
+        },
+        where: {
+          plan: {
+            semesterId: input.semesterId,
+            subjectId: input.subjectId,
+          },
+        },
+      });
+
+      return items.map((item) => ({
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        date: item.date,
+        badges: item.badges.map((badge) => ({
+          id: badge.badgeId,
+          name: badgesMap.get(badge.badgeId)?.name ?? 'unknown',
+          evaluated: badge.evaluated,
+        })),
+        task: { totalCount: item.tasks.length, count: item.tasks.filter((t) => t.isDone).length },
+      }));
+    }),
 
   addBadge: publicProcedure
     .input(

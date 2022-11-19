@@ -1,7 +1,4 @@
 / --> Übersichtsseite mit entweder den nächsten Lektionen (nächste paar Tage) und / oder wichtigen Aktionen
-/plans/2023-01/Deutsch --> Semesterplan für 2023 Frühlingssemester (Deutsch)
-
-- /plans/[param]/[subjectName]
 
 Nächste steps, wenn abgeschlossen:
 

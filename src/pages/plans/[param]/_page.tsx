@@ -81,7 +81,6 @@ const useVacations = (semesterId: string) => {
   );
   return useMemo(() => {
     if (!semester) return [];
-    // TODO: bitte beachten, dass Ferien erst am Montag darauf anfangen!
     return vacationDefinitions.filter((v) => v.end >= semester.start && v.start <= semester.end);
   }, [semester]);
 };
