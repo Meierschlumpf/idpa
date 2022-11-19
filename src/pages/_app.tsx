@@ -9,6 +9,8 @@ import { useAuthStore } from '../stores/auth-store';
 import '../styles/globals.css';
 import { trpc } from '../utils/trpc';
 
+const colorScheme = 'dark';
+
 const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { ...pageProps } }) => {
   const { data: role, isLoading } = trpc.activeRole.current.useQuery();
   const setRole = useAuthStore((x) => x.setRole);
@@ -18,13 +20,18 @@ const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { .
     setRole(role.name);
   }, [role]);
 
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    document.body.setAttribute('data-color-scheme', colorScheme);
+  }, [colorScheme]);
+
   return (
     <MantineProvider
       withGlobalStyles
       withNormalizeCSS
       theme={{
         /** Put your mantine theme override here */
-        colorScheme: 'light',
+        colorScheme,
       }}
     >
       <NotificationsProvider>

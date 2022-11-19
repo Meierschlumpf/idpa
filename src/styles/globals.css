@@ -17,9 +17,13 @@ a {
 
 .mention {
   padding: 2px;
-  background-color: #e7f5ff;
+  background-color: #dcecec;
   border-radius: 4px;
   position: relative;
+}
+
+body[data-color-scheme="dark"] .mention {
+  background-color: #373A40;
 }
 
 .mention:hover {
