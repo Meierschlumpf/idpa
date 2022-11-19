@@ -14,5 +14,4 @@ Nächste steps, wenn abgeschlossen:
 - Aufgaben hinzufügen
 - Aktuelle Tasks auflisten auf Home für Schüler.
 - Schnelle Aktionen hinzufügen für Lehrer.
-- Datum anzeigen neben Kalenderwoche
 - P&D Plan?

@@ -1,5 +1,6 @@
 import { Card, Group, Stack, Text, Title, TypographyStylesProvider, useMantineTheme } from '@mantine/core';
 import { MutableRefObject, RefObject } from 'react';
+import { formatDay } from '../../../helpers/time/format';
 import { getWeekNumber } from '../../../helpers/time/get-week-number';
 import { AppRouterTypes, trpc } from '../../../utils/trpc';
 import { PlanItemTasks } from '../../pages/plans/[param]/tasks';
@@ -67,7 +68,7 @@ export const PlanLessonItem = ({ subject, item, showKw = true, targetRef, isNext
 
   return (
     <Card
-      mt={isNext ? 20 : undefined}
+      mt={20}
       style={{
         borderColor: isNext ? theme.colors.blue[5] : undefined,
         overflow: 'visible',
@@ -78,18 +79,28 @@ export const PlanLessonItem = ({ subject, item, showKw = true, targetRef, isNext
       radius="md"
       withBorder
     >
-      {isNext && (
-        <Text
-          style={{
-            position: 'absolute',
-            top: -24,
-            left: 0,
-            color: theme.colors.blue[5],
-          }}
-        >
-          {getNextDate(item.date)}
-        </Text>
-      )}
+      <Group
+        spacing={4}
+        style={{
+          position: 'absolute',
+          top: -24,
+          left: 0,
+        }}
+      >
+        {isNext && (
+          <>
+            <Text
+              style={{
+                color: theme.colors.blue[5],
+              }}
+            >
+              {getNextDate(item.date)}
+            </Text>
+            <Text>-</Text>
+          </>
+        )}
+        <Text>{formatDay(item.date)}</Text>
+      </Group>
       <Stack>
         <Group position="apart" align="center">
           <Title order={3}>
