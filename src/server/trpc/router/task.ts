@@ -62,7 +62,6 @@ export const taskRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      console.log(input.materials.map((id) => ({ id })));
       await await ctx.prisma.task.update({
         where: {
           id: input.taskId,
@@ -73,6 +72,38 @@ export const taskRouter = router({
           materials: {
             set: input.materials.map((id) => ({ id })),
           },
+        },
+      });
+    }),
+  done: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.task.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          isDone: true,
+        },
+      });
+    }),
+  todo: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.task.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          isDone: false,
         },
       });
     }),

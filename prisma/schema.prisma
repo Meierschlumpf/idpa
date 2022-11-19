@@ -49,6 +49,7 @@ model Task {
   planItemId  String
   planItem    PlanItem            @relation(fields: [planItemId], references: [id])
   materials   ReferenceMaterial[]
+  isDone      Boolean             @default(false)
 }
 
 model ActiveRole {

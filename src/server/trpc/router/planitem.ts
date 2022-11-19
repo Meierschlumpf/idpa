@@ -97,11 +97,7 @@ export const planItemRouter = router({
       const items = await ctx.prisma.planItem.findMany({
         include: {
           badges: true,
-          _count: {
-            select: {
-              tasks: true,
-            },
-          },
+          tasks: true,
         },
         orderBy: {
           date: 'asc',
@@ -121,7 +117,7 @@ export const planItemRouter = router({
           name: badgesMap.get(badge.badgeId)?.name ?? 'unknown',
           evaluated: badge.evaluated,
         })),
-        task: { totalCount: item._count.tasks, count: 0 },
+        task: { totalCount: item.tasks.length, count: item.tasks.filter((t) => t.isDone).length },
       }));
     }),
 
@@ -140,11 +136,7 @@ export const planItemRouter = router({
       const items = await ctx.prisma.planItem.findMany({
         include: {
           badges: true,
-          _count: {
-            select: {
-              tasks: true,
-            },
-          },
+          tasks: true,
           plan: true,
         },
         orderBy: {
@@ -167,7 +159,7 @@ export const planItemRouter = router({
           name: badgesMap.get(badge.badgeId)?.name ?? 'unknown',
           evaluated: badge.evaluated,
         })),
-        task: { totalCount: item._count.tasks, count: 0 },
+        task: { totalCount: item.tasks.length, count: item.tasks.filter((t) => t.isDone).length },
         subjectId: item.plan.subjectId,
       }));
     }),

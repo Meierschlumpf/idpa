@@ -1,5 +1,4 @@
-import { Button, Divider, Group, Modal, Stack, Title } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { Divider, Modal, Stack, Title } from '@mantine/core';
 import { BaseModalProps } from '../../../../types/base-modal-props';
 import { trpc } from '../../../../utils/trpc';
 import { TaskItem } from './item';
@@ -22,7 +21,7 @@ export const TaskListModal = ({ opened, closeModal, planItemId }: TaskEditListMo
       <Stack pt="md">
         <Divider />
         {tasks?.map((t, i) => (
-          <TaskItem key={t.id} task={t} position={i + 1} />
+          <TaskItem key={t.id} task={t} />
         ))}
       </Stack>
     </Modal>
