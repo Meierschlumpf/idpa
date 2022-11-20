@@ -5,8 +5,8 @@ Nächste steps, wenn abgeschlossen:
 - Hausaufgaben hinzufügen
 - Aktuelle Tasks auflisten auf Home für Schüler.
 - Schnelle Aktionen hinzufügen für Lehrer.
-- P&D Plan?
-- Header überarbeiten
 - Sidebar hinzufügen für Pläne
 - Start und Endzeit hinzufügen für Plan (Lektionsstart & -Ende)
 - Feiertage / Projektwoche
+- Offene Tasks / Hausaufgaben
+- P&D Plan?
