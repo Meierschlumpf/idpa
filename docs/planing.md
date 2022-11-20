@@ -3,10 +3,12 @@
 Nächste steps, wenn abgeschlossen:
 
 - Hausaufgaben hinzufügen
-- Aktuelle Tasks auflisten auf Home für Schüler.
-- Schnelle Aktionen hinzufügen für Lehrer.
+- Aktuelle Tasks auflisten auf Home für Schüler. (Guten Morgen, Nachmittag, Abend)
+- Schnelle Aktionen hinzufügen für Lehrer. (Guten Morgen, Nachmittag, Abend)
 - Sidebar hinzufügen für Pläne
+- Übersicht aller Pläne hinzufügen
 - Start und Endzeit hinzufügen für Plan (Lektionsstart & -Ende)
 - Feiertage / Projektwoche
 - Offene Tasks / Hausaufgaben
-- P&D Plan?
+- Liste aller Tasks / Hausaufgaben auf /tasks
+- P&D Plan auf /assessments?
