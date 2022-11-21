@@ -84,6 +84,7 @@ export const referenceMaterialRouter = router({
         previous.push({
           id: plan.subjectId,
           name: plan.subject.name,
+          icon: plan.subject.icon,
           materials: [material],
         });
         return previous;
@@ -109,5 +110,6 @@ export const referenceMaterialRouter = router({
 type ReferenceMaterialSubjectType = {
   id: string;
   name: string;
+  icon: string;
   materials: Omit<ReferenceMaterial, 'plan'>[];
 };
