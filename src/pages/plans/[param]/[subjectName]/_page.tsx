@@ -7,6 +7,7 @@ import { NoItemsOverlay } from '../../../../components/overlays/no-items';
 import { SemesterPlanList } from '../../../../components/pages/plans/[param]/list';
 import { SubjectPlanAside } from '../../../../components/pages/plans/[param]/[subjectName]/aside';
 import { SemesterSubjectPlanList } from '../../../../components/pages/plans/[param]/[subjectName]/list';
+import { PlanSidebar } from '../../../../components/plan/sidebar';
 import { PlanTitle } from '../../../../components/plan/title';
 import { vacationDefinitions } from '../../../../constants/vacations';
 import { BasicLayout } from '../../../../layout/basic';
@@ -42,7 +43,10 @@ export const SubjectPlanPage = ({ semesterId, subjectName }: SubjectPlanPageProp
 
   return (
     <>
-      <BasicLayout asideContent={semester && subject && <SubjectPlanAside semester={semester.id} subjectId={subject.id} />}>
+      <BasicLayout
+        sidebarContent={<PlanSidebar activeSemesterId={semesterId} activeSubjectId={subject?.id} />}
+        asideContent={semester && subject && <SubjectPlanAside semester={semester.id} subjectId={subject.id} />}
+      >
         <Container>
           <PlanTitle semester={semester?.id} />
           <ScrollArea

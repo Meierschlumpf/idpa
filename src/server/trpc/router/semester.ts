@@ -18,6 +18,20 @@ export const semesterRouter = router({
   getAll: publicProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.semster.findMany();
   }),
+  getAllWithSubjects: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.semster.findMany({
+      include: {
+        plans: {
+          include: {
+            subject: true,
+          },
+        },
+      },
+      orderBy: {
+        start: 'asc',
+      },
+    });
+  }),
   getCurrent: publicProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.semster.findFirst({
       where: {

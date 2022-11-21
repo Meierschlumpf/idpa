@@ -1,53 +1,42 @@
-import { createStyles, Navbar, ScrollArea } from '@mantine/core';
+import { Box, Group, NavLink, Title, useMantineTheme } from '@mantine/core';
+import { NextLink } from '@mantine/next';
+import { IconAlignLeft, IconCalendarEvent, IconExternalLink } from '@tabler/icons';
 import { trpc } from '../../utils/trpc';
-import { LinksGroup } from '../links-group';
 import { TablerIconComponent } from '../tablerIcon';
 
-
-export const PlansSidebar = () => {
-	const { classes } = useStyles();
-	const { data: subjects } = trpc.subject.getAll.useQuery();
-
-	const links = subjects?.map((s) => <LinksGroup icon={<TablerIconComponent name={s.icon} size={16} />} label={s.name} link={`/${s.routeName}`} key={s.id} />);
-
-	return (
-		<Navbar.Section grow className={classes.links} component={ScrollArea}>
-			<div className={classes.linksInner}>{links}</div>
-		</Navbar.Section>
-	);
-
+interface PlanSidebarProps {
+  activeSemesterId?: string;
+  activeSubjectId?: string;
 }
 
-const useStyles = createStyles((theme) => ({
-	navbar: {
-		backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.white,
-		paddingBottom: 0,
-	},
+export const PlanSidebar = ({ activeSemesterId, activeSubjectId }: PlanSidebarProps) => {
+	const {colors} = useMantineTheme();
+	const activeColor = colors.blue[5];
+  const { data: semesters } = trpc.semester.getAllWithSubjects.useQuery();
 
-	header: {
-		padding: theme.spacing.md,
-		paddingTop: 0,
-		marginLeft: -theme.spacing.md,
-		marginRight: -theme.spacing.md,
-		color: theme.colorScheme === 'dark' ? theme.white : theme.black,
-		borderBottom: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]
-			}`,
-	},
+  return (
+    <>
+      <Group>
+        <IconCalendarEvent />
+        <Title order={5}>Pläne</Title>
+      </Group>
 
-	links: {
-		marginLeft: -theme.spacing.md,
-		marginRight: -theme.spacing.md,
-	},
-
-	linksInner: {
-		paddingTop: theme.spacing.xl,
-		paddingBottom: theme.spacing.xl,
-	},
-
-	footer: {
-		marginLeft: -theme.spacing.md,
-		marginRight: -theme.spacing.md,
-		borderTop: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]
-			}`,
-	},
-}));
+      <Box sx={{ width: 240 }} mt="sm">
+        {semesters?.map((sem) => (
+          <NavLink key={sem.id} label={sem.id} childrenOffset={28} defaultOpened={activeSemesterId == sem.id}>
+            <NavLink label="Übersicht" icon={<IconAlignLeft color={activeSemesterId == sem.id && !activeSubjectId ? activeColor : undefined} />} component={NextLink} href={`/plans/${sem.id}`} />
+            {sem.plans.map((pl) => (
+              <NavLink
+                key={pl.id}
+                label={pl.subject.name}
+                icon={<TablerIconComponent name={pl.subject.icon} color={activeSemesterId == sem.id && activeSubjectId == pl.subjectId ? activeColor : undefined} />}
+                component={NextLink}
+                href={`/plans/${sem.id}/${pl.subject.routeName}`}
+              />
+            ))}
+          </NavLink>
+        ))}
+      </Box>
+    </>
+  );
+};

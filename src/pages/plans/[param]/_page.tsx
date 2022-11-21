@@ -6,6 +6,7 @@ import { LoadOverlay } from '../../../components/overlays/load';
 import { NoItemsOverlay } from '../../../components/overlays/no-items';
 import { PlanAside } from '../../../components/pages/plans/[param]/aside';
 import { SemesterPlanList } from '../../../components/pages/plans/[param]/list';
+import { PlanSidebar } from '../../../components/plan/sidebar';
 import { PlanTitle } from '../../../components/plan/title';
 import { vacationDefinitions } from '../../../constants/vacations';
 import { BasicLayout } from '../../../layout/basic';
@@ -30,7 +31,7 @@ export const PlanPage = ({ semesterId }: PlanPageProps) => {
 
   return (
     <>
-      <BasicLayout asideContent={<PlanAside semester={semesterId} />}>
+      <BasicLayout sidebarContent={<PlanSidebar activeSemesterId={semesterId} />} asideContent={<PlanAside semester={semesterId} />}>
         <Container>
           <Group position="apart" align="center">
             <PlanTitle semester={semesterId} />
