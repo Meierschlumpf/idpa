@@ -1,6 +1,7 @@
 // src/server/trpc/router/_app.ts
 import { router } from '../trpc';
 import { activeRoleRouter } from './activeRole';
+import { homeworkRouter } from './homework';
 import { planRouter } from './plan';
 import { planItemRouter } from './planitem';
 import { referenceMaterialRouter } from './referenceMaterial';
@@ -16,6 +17,7 @@ export const appRouter = router({
   referenceMaterial: referenceMaterialRouter,
   activeRole: activeRoleRouter,
   task: taskRouter,
+  homework: homeworkRouter,
 });
 
 // export type definition of API

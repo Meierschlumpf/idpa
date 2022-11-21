@@ -34,15 +34,26 @@ model Plan {
 }
 
 model ReferenceMaterial {
-  id     String @id @default(cuid())
-  name   String
-  link   String
-  planId String
-  plan   Plan   @relation(fields: [planId], references: [id])
-  tasks  Task[]
+  id        String     @id @default(cuid())
+  name      String
+  link      String
+  planId    String
+  plan      Plan       @relation(fields: [planId], references: [id])
+  tasks     Task[]
+  homeworks Homework[]
 }
 
 model Task {
+  id          String              @id @default(cuid())
+  title       String
+  description String?
+  planItemId  String
+  planItem    PlanItem            @relation(fields: [planItemId], references: [id])
+  materials   ReferenceMaterial[]
+  isDone      Boolean             @default(false)
+}
+
+model Homework {
   id          String              @id @default(cuid())
   title       String
   description String?
@@ -71,6 +82,7 @@ model PlanItem {
   planId      String
   badges      PlanItemBadge[]
   tasks       Task[]
+  homeworks   Homework[]
   plan        Plan            @relation(fields: [planId], references: [id])
 }
 

@@ -7,12 +7,13 @@ interface PlanItemTaskBase {
   onHomeworkClick: () => Promise<void> | void;
   onTasksClick: () => Promise<void> | void;
   task: { count: number; totalCount: number };
+  homework: { count: number; totalCount: number };
 }
 
-export const PlanItemTaskBase = ({ type, onHomeworkClick, onTasksClick, task }: PlanItemTaskBase) => {
+export const PlanItemTaskBase = ({ type, onHomeworkClick, onTasksClick, homework, task }: PlanItemTaskBase) => {
   return (
     <Group>
-      <TaskButton tooltipLabel="Hausaufgaben" onClick={onHomeworkClick} icon={IconHomeCheck} count={0} totalCount={0} type={type} />
+      <TaskButton tooltipLabel="Hausaufgaben" onClick={onHomeworkClick} icon={IconHomeCheck} {...homework} type={type} />
       <TaskButton tooltipLabel="Aufträge" onClick={onTasksClick} icon={IconCheckbox} {...task} type={type} />
     </Group>
   );

@@ -12,34 +12,12 @@ interface TaskEditListModalProps extends BaseModalProps {
 
 export const TaskEditListModal = ({ opened, closeModal, planId, planItemId }: TaskEditListModalProps) => {
   const [createModalOpened, createModal] = useDisclosure(false);
-  const utils = trpc.useContext();
-  //const { mutateAsync } = trpc.referenceMaterial.create.useMutation();
   const { data: tasks } = trpc.task.getByPlanItemId.useQuery({
     planItemId,
   });
 
   const onClose = () => {
     closeModal();
-  };
-
-  const handleRemove = async (values: FormType) => {
-    if (!values.name || !values.link) return;
-    /*await mutateAsync(
-      {
-        planId: planId,
-        ...(values as unknown as any),
-      },
-      {
-        onSuccess() {
-          showSuccessNotification({
-            title: 'Material hinzugefügt',
-            message: 'Das Referenzmaterial wurde erfolgreich hinzugefügt!',
-          });
-          utils.referenceMaterial.getByPlanId.invalidate();
-          onClose();
-        },
-      }
-    );*/
   };
 
   return (

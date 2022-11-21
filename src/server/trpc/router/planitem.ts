@@ -98,6 +98,7 @@ export const planItemRouter = router({
         include: {
           badges: true,
           tasks: true,
+          homeworks: true,
         },
         orderBy: {
           date: 'asc',
@@ -118,6 +119,7 @@ export const planItemRouter = router({
           evaluated: badge.evaluated,
         })),
         task: { totalCount: item.tasks.length, count: item.tasks.filter((t) => t.isDone).length },
+        homework: { totalCount: item.homeworks.length, count: item.homeworks.filter((t) => t.isDone).length },
       }));
     }),
 
@@ -137,6 +139,7 @@ export const planItemRouter = router({
         include: {
           badges: true,
           tasks: true,
+          homeworks: true,
           plan: true,
         },
         orderBy: {
@@ -160,6 +163,7 @@ export const planItemRouter = router({
           evaluated: badge.evaluated,
         })),
         task: { totalCount: item.tasks.length, count: item.tasks.filter((t) => t.isDone).length },
+        homework: { totalCount: item.homeworks.length, count: item.homeworks.filter((t) => t.isDone).length },
         subjectId: item.plan.subjectId,
       }));
     }),
@@ -180,6 +184,7 @@ export const planItemRouter = router({
         include: {
           badges: true,
           tasks: true,
+          homeworks: true,
           plan: true,
         },
         orderBy: {
@@ -204,6 +209,7 @@ export const planItemRouter = router({
           evaluated: badge.evaluated,
         })),
         task: { totalCount: item.tasks.length, count: item.tasks.filter((t) => t.isDone).length },
+        homework: { totalCount: item.homeworks.length, count: item.homeworks.filter((t) => t.isDone).length },
       }));
     }),
 

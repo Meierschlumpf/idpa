@@ -1,5 +1,6 @@
 import { useDisclosure } from '@mantine/hooks';
 import { AppRouterTypes } from '../../../../utils/trpc';
+import { HomeworkListModal } from '../../../plan/item/homeworks/list-modal';
 import { PlanItemTaskBase } from '../../../plan/item/tasks';
 import { TaskListModal } from '../../../plan/item/tasks/list-modal';
 
@@ -9,12 +10,13 @@ interface PlanItemTasksProps {
 
 export const PlanItemTasks = ({ planItem }: PlanItemTasksProps) => {
   const [taskModalOpened, taskModal] = useDisclosure(false);
-  const onHomeworkClick = () => {};
+  const [homeworkModalOpened, homeworkModal] = useDisclosure(false);
 
   return (
     <>
-      <PlanItemTaskBase type="read" onHomeworkClick={onHomeworkClick} onTasksClick={taskModal.open} task={planItem.task} />
+      <PlanItemTaskBase type="read" onHomeworkClick={homeworkModal.open} onTasksClick={taskModal.open} task={planItem.task} homework={planItem.homework} />
       <TaskListModal opened={taskModalOpened} closeModal={taskModal.close} planItemId={planItem.id} />
+      <HomeworkListModal opened={homeworkModalOpened} closeModal={homeworkModal.close} planItemId={planItem.id} />
     </>
   );
 };
