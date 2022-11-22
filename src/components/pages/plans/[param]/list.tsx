@@ -11,7 +11,7 @@ import { PlanWeekVacationItem } from './vacationItem';
 interface SemesterPlanListProps {
   lessons: AppRouterTypes['planItem']['getBySemesterId']['output'];
   vacations: typeof vacationDefinitions;
-  targetRef: RefObject<HTMLDivElement>;
+  targetRef?: RefObject<HTMLDivElement>;
 }
 
 export const SemesterPlanList = ({ lessons, vacations, targetRef }: SemesterPlanListProps) => {

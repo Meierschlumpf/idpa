@@ -93,6 +93,7 @@ export const PlanItemEditModal = ({ planId, item, opened, closeModal }: Props) =
           utils.planItem.getAll.invalidate();
           utils.planItem.getByPlanId.invalidate();
           utils.planItem.getBySubjectId.invalidate();
+          utils.planItem.getNext.invalidate();
         },
       }
     );

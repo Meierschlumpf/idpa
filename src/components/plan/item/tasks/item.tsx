@@ -27,6 +27,7 @@ export const TaskItem = ({ task }: TaskItemProps) => {
           utils.task.getByPlanItemId.invalidate();
           utils.planItem.getBySemesterId.invalidate();
           utils.planItem.getBySubjectId.invalidate();
+          utils.planItem.getNext.invalidate();
         },
       }
     );
@@ -42,6 +43,7 @@ export const TaskItem = ({ task }: TaskItemProps) => {
           utils.task.getByPlanItemId.invalidate();
           utils.planItem.getBySemesterId.invalidate();
           utils.planItem.getBySubjectId.invalidate();
+          utils.planItem.getNext.invalidate();
         },
       }
     );

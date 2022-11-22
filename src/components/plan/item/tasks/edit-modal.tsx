@@ -65,6 +65,7 @@ export const TaskEditModal = ({ opened, closeModal, planId, planItemId, task }: 
             message: 'Der Auftrag wurde erfolgreich gespeichert!',
           });
           utils.task.getByPlanItemId.invalidate({ planItemId });
+          utils.planItem.getNext.invalidate();
           closeModal();
         },
       }

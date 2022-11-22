@@ -28,6 +28,7 @@ export const TaskRemoveModal = ({ opened, closeModal, task, planItemId }: TaskRe
             message: 'Der Auftrag wurde erfolgreich entfernt!',
           });
           utils.task.getByPlanItemId.invalidate({ planItemId });
+          utils.planItem.getNext.invalidate();
         },
       }
     );

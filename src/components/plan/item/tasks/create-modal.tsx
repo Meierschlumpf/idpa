@@ -55,6 +55,7 @@ export const TaskCreateModal = ({ opened, closeModal, planId, planItemId }: Task
           });
           utils.task.getByPlanItemId.invalidate({ planItemId });
           utils.planItem.getByPlanId.invalidate({ planId });
+          utils.planItem.getNext.invalidate();
           onClose();
         },
       }

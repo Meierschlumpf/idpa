@@ -7,7 +7,7 @@ import { ReducedSortableLesson } from './list';
 interface PlanWeekItemProps {
   item: ReducedSortableLesson;
   nextId?: string;
-  targetRef: RefObject<HTMLDivElement>;
+  targetRef?: RefObject<HTMLDivElement>;
 }
 export const PlanWeekLessonItem = ({ item: { week, items }, nextId, targetRef }: PlanWeekItemProps) => {
   const { data: subjects } = trpc.subject.getAll.useQuery();
