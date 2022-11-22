@@ -1,6 +1,7 @@
-import { Box, Group, Header, Select, Text } from '@mantine/core';
-import { IconSchool } from '@tabler/icons';
+import { ActionIcon, Box, Group, Header, Select, Text } from '@mantine/core';
+import { IconMoon, IconSchool, IconSun } from '@tabler/icons';
 import { useAuthStore } from '../../stores/auth-store';
+import { useThemeStore } from '../../stores/theme-store';
 import { trpc } from '../../utils/trpc';
 import { StudentHeaderNavigation } from './header/variant/student';
 import { TeacherHeaderNavigation } from './header/variant/teacher';
@@ -13,6 +14,9 @@ interface BasicHeaderProps {
 export const BasicHeader = ({}: BasicHeaderProps) => {
   const role = useAuthStore((x) => x.role);
   const setRole = useAuthStore((x) => x.setRole);
+  const setTheme = useThemeStore((x) => x.setTheme);
+  const theme = useThemeStore((x) => x.theme);
+
   const { mutateAsync } = trpc.activeRole.update.useMutation();
 
   const handleRoleChange = async (newRole: 'student' | 'teacher' | null) => {
@@ -47,6 +51,15 @@ export const BasicHeader = ({}: BasicHeaderProps) => {
 
           <Group>
             <Select withinPortal value={role} data={['student', 'teacher']} onChange={handleRoleChange} />
+            <ActionIcon
+              variant="default"
+              onClick={() => {
+                setTheme(theme === 'dark' ? 'light' : 'dark');
+              }}
+              size="lg"
+            >
+              {theme === 'dark' ? <IconMoon /> : <IconSun />}
+            </ActionIcon>
           </Group>
         </Group>
       </Header>

@@ -6,6 +6,7 @@ import type { AppType } from 'next/app';
 import { useEffect } from 'react';
 import { LoadOverlay } from '../components/overlays/load';
 import { useAuthStore } from '../stores/auth-store';
+import { useThemeStore } from '../stores/theme-store';
 import '../styles/globals.css';
 import { trpc } from '../utils/trpc';
 
@@ -14,6 +15,7 @@ const colorScheme = 'dark';
 const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { ...pageProps } }) => {
   const { data: role, isLoading } = trpc.activeRole.current.useQuery();
   const setRole = useAuthStore((x) => x.setRole);
+  const theme = useThemeStore((x) => x.theme);
 
   useEffect(() => {
     if (!role) return;
@@ -31,7 +33,7 @@ const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { .
       withNormalizeCSS
       theme={{
         /** Put your mantine theme override here */
-        colorScheme,
+        colorScheme: theme,
       }}
     >
       <NotificationsProvider>

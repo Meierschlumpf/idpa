@@ -1,7 +1,6 @@
 Nächste steps, wenn abgeschlossen:
 
 - Feiertage / Projektwoche
-- Offene Tasks / Hausaufgaben
 - Liste aller Tasks / Hausaufgaben auf /tasks
 - P&D Plan auf /assessments?
 - Add light / dark switch
