@@ -58,7 +58,7 @@ export const BasicHeader = ({}: BasicHeaderProps) => {
               }}
               size="lg"
             >
-              {theme === 'dark' ? <IconMoon /> : <IconSun />}
+              {theme === 'light' ? <IconMoon stroke={1.5} /> : <IconSun stroke={1.5} />}
             </ActionIcon>
           </Group>
         </Group>
