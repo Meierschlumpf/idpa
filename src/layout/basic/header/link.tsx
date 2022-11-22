@@ -1,5 +1,6 @@
 import { createStyles, UnstyledButton } from '@mantine/core';
 import { NextLink } from '@mantine/next';
+import { useRouter } from 'next/router';
 
 interface HeaderLinkProps {
   label: string;
@@ -8,7 +9,8 @@ interface HeaderLinkProps {
 }
 
 export const HeaderLink = ({ label, href, disabled = false }: HeaderLinkProps) => {
-  const { classes } = useStyles();
+  const { classes, cx } = useStyles();
+  const { asPath } = useRouter();
 
   if (disabled) {
     return (
@@ -18,8 +20,10 @@ export const HeaderLink = ({ label, href, disabled = false }: HeaderLinkProps) =
     );
   }
 
+  const isActive = asPath === href;
+
   return (
-    <UnstyledButton component={NextLink} href={href} className={classes.link}>
+    <UnstyledButton component={NextLink} href={href} className={cx(classes.link, isActive ? classes.activeLink : undefined)}>
       {label}
     </UnstyledButton>
   );
@@ -47,5 +51,9 @@ const useStyles = createStyles((theme) => ({
     ...theme.fn.hover({
       backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
     }),
+  },
+
+  activeLink: {
+    color: theme.colors.blue[4],
   },
 }));
