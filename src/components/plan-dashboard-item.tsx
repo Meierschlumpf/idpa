@@ -8,16 +8,19 @@ import { TablerIconComponent } from './tablerIcon';
 
 interface PlanDashboardItemProps {
   plan: AppRouterTypes['plan']['getForDashboard']['output'][0];
+  showSemester?: boolean;
+  current?: boolean;
 }
 
-export const PlanDashboardItem = ({ plan }: PlanDashboardItemProps) => {
+export const PlanDashboardItem = ({ plan, showSemester = true, current = false }: PlanDashboardItemProps) => {
   const { colors, colorScheme } = useMantineTheme();
   const role = useAuthStore((x) => x.role);
+  const { shadows } = useMantineTheme();
 
   const inner = (
     <Card
       withBorder
-      style={{ width: '100%', height: '100%' }}
+      style={{ width: '100%', height: '100%', borderColor: current ? 'rgba(25, 113, 194, 0.7)' : undefined }}
       sx={
         role === 'student'
           ? {
@@ -36,9 +39,11 @@ export const PlanDashboardItem = ({ plan }: PlanDashboardItemProps) => {
           <TablerIconComponent name={plan.subject.icon} />
           <Stack spacing={0}>
             <Text weight={500}>{plan.subject.name}</Text>
-            <Text size="sm" color="dimmed">
-              {plan.semesterId}
-            </Text>
+            {showSemester && (
+              <Text size="sm" color="dimmed">
+                {plan.semesterId}
+              </Text>
+            )}
           </Stack>
         </Group>
         {role === 'teacher' ? (

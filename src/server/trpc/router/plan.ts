@@ -126,6 +126,26 @@ export const planRouter = router({
       take: 6,
     });
   }),
+  getAll: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.plan.findMany({
+      include: {
+        subject: true,
+        semester: true,
+      },
+      orderBy: [
+        {
+          semester: {
+            start: 'asc',
+          },
+        },
+        {
+          subject: {
+            name: 'asc',
+          },
+        },
+      ],
+    });
+  }),
 });
 
 const getNextDate = (lastDate: Date) => {

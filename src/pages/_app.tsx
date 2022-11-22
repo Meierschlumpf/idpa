@@ -9,7 +9,7 @@ import { useAuthStore } from '../stores/auth-store';
 import '../styles/globals.css';
 import { trpc } from '../utils/trpc';
 
-const colorScheme = 'light';
+const colorScheme = 'dark';
 
 const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { ...pageProps } }) => {
   const { data: role, isLoading } = trpc.activeRole.current.useQuery();
