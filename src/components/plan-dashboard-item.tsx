@@ -16,12 +16,13 @@ export const PlanDashboardItem = ({ plan }: PlanDashboardItemProps) => {
 
   const inner = (
     <Card
+      withBorder
       style={{ width: '100%', height: '100%' }}
       sx={
         role === 'student'
           ? {
               ':hover': {
-                backgroundColor: colorScheme === 'dark' ? colors.dark[5] : colors.gray[3],
+                backgroundColor: colorScheme === 'dark' ? colors.dark[5] : colors.gray[1],
               },
               ':active': {
                 transform: 'translateY(2px)',
