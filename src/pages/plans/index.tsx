@@ -41,7 +41,7 @@ const PlansPage = () => {
               {role === 'student' ? (
                 <Grid.Col span={4}>
                   <PlanDashboardItem
-                    plan={{ subject: { name: 'Übersicht', icon: 'AlignLeft', routeName: '' } } as any}
+                    plan={{ subject: { name: 'Übersicht', icon: 'AlignLeft', routeName: '' }, semesterId: semester } as any}
                     showSemester={false}
                     current={items.at(0)!.semester.start <= new Date() && items.at(0)!.semester.end > new Date()}
                   />

@@ -15,16 +15,18 @@ export const PlanWeekLessonItem = ({ item: { week, items }, nextId, targetRef }:
   return (
     <Stack mt="lg" spacing="sm">
       <Title order={3}>KW {week}</Title>
-      {items.map((item, index) => (
-        <PlanLessonItem
-          key={item.id}
-          item={item}
-          isNext={containsNext && index === 0}
-          targetRef={containsNext && index === 0 ? targetRef : undefined}
-          subject={subjects?.find((s) => s.id === item.subjectId)}
-          showKw={false}
-        />
-      ))}
+      {items
+        .sort((a, b) => a.date.getTime() - b.date.getTime())
+        .map((item, index) => (
+          <PlanLessonItem
+            key={item.id}
+            item={item}
+            isNext={containsNext && index === 0}
+            targetRef={containsNext && index === 0 ? targetRef : undefined}
+            subject={subjects?.find((s) => s.id === item.subjectId)}
+            showKw={false}
+          />
+        ))}
     </Stack>
   );
 };

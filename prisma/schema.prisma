@@ -25,6 +25,8 @@ model Subject {
 model Plan {
   id                 String              @id @default(cuid())
   day                Int
+  startTime          Int                 @default(0)
+  endTime            Int                 @default(0)
   subjectId          String
   semesterId         String
   subject            Subject             @relation(fields: [subjectId], references: [id])

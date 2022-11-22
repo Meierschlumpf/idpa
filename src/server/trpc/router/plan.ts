@@ -10,6 +10,8 @@ export const planRouter = router({
         subjectId: z.string(),
         semesterId: z.string(),
         day: z.number(),
+        startTime: z.date(),
+        endTime: z.date(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -26,11 +28,16 @@ export const planRouter = router({
           cause: 'PLAN_ALREADY_EXISTS',
         });
 
+      const startTime = input.startTime.getHours() * 60 + input.startTime.getMinutes();
+      const endTime = input.endTime.getHours() * 60 + input.endTime.getMinutes();
+
       const plan = await ctx.prisma.plan.create({
         data: {
           day: input.day,
           subjectId: input.subjectId,
           semesterId: input.semesterId,
+          startTime,
+          endTime,
         },
       });
 
@@ -44,7 +51,7 @@ export const planRouter = router({
 
       const dayOfStart = semester.start.getDay();
       const difference = (input.day + 7 - dayOfStart) % 7;
-      let nextDay = new Date(semester.start.getFullYear(), semester.start.getMonth(), semester.start.getDate() + difference, 12, 0, 0);
+      let nextDay = new Date(semester.start.getFullYear(), semester.start.getMonth(), semester.start.getDate() + difference, input.startTime.getHours(), input.startTime.getMinutes(), 0);
 
       while (nextDay.getTime() <= semester.end.getTime()) {
         if (!vacationDefinitions.some((v) => v.start.getTime() <= nextDay.getTime() && v.end.getTime() >= nextDay.getTime())) {

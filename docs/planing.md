@@ -1,6 +1,5 @@
 Nächste steps, wenn abgeschlossen:
 
-- Start und Endzeit hinzufügen für Plan (Lektionsstart & -Ende)
 - Feiertage / Projektwoche
 - Offene Tasks / Hausaufgaben
 - Liste aller Tasks / Hausaufgaben auf /tasks
