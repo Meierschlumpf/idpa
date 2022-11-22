@@ -2,6 +2,7 @@ import { Button, Container, Grid, Group, Select, Stack, Title } from '@mantine/c
 import { TimeInput, TimeRangeInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { NextPage } from 'next';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { showSuccessNotification } from '../../../helpers/notifications/success';
 import { generateSelectDataWeekDays } from '../../../helpers/time/get-week-days';
@@ -48,57 +49,62 @@ const Page: NextPage = () => {
   };
 
   return (
-    <BasicLayout>
-      <Container>
-        <Title order={3}>Semesterplan erstellen</Title>
-        <form onSubmit={form.onSubmit(handleSubmit)}>
-          <Stack mt="xl">
-            <Select
-              label="Semester"
-              placeholder="Bitte Semester auswählen"
-              data={
-                semesters?.map((s) => ({
-                  label: s.id,
-                  value: s.id,
-                })) ?? []
-              }
-              {...form.getInputProps('semesterId')}
-            ></Select>
+    <>
+      <Head>
+        <title>Semesterplan erstellen | IDPA</title>
+      </Head>
+      <BasicLayout>
+        <Container>
+          <Title order={3}>Semesterplan erstellen</Title>
+          <form onSubmit={form.onSubmit(handleSubmit)}>
+            <Stack mt="xl">
+              <Select
+                label="Semester"
+                placeholder="Bitte Semester auswählen"
+                data={
+                  semesters?.map((s) => ({
+                    label: s.id,
+                    value: s.id,
+                  })) ?? []
+                }
+                {...form.getInputProps('semesterId')}
+              ></Select>
 
-            <Select label="Schultag" placeholder="Bitte Schultag auswählen" data={generateSelectDataWeekDays([1, 2, 3, 4, 5])} {...form.getInputProps('day')}></Select>
+              <Select label="Schultag" placeholder="Bitte Schultag auswählen" data={generateSelectDataWeekDays([1, 2, 3, 4, 5])} {...form.getInputProps('day')}></Select>
 
-            <Grid>
-              <Grid.Col span={6}>
-                <TimeInput label="Startzeit" format="24" {...form.getInputProps('startTime')} />
-              </Grid.Col>
+              <Grid>
+                <Grid.Col span={6}>
+                  <TimeInput label="Startzeit" format="24" {...form.getInputProps('startTime')} />
+                </Grid.Col>
 
-              <Grid.Col span={6}>
-                <TimeInput label="Endzeit" format="24" {...form.getInputProps('endTime')} />
-              </Grid.Col>
-            </Grid>
+                <Grid.Col span={6}>
+                  <TimeInput label="Endzeit" format="24" {...form.getInputProps('endTime')} />
+                </Grid.Col>
+              </Grid>
 
-            <Select
-              label="Fach"
-              placeholder="Bitte Fach auswählen"
-              data={
-                subjects?.map((s) => ({
-                  label: s.name,
-                  value: s.id,
-                })) ?? []
-              }
-              {...form.getInputProps('subjectId')}
-            ></Select>
+              <Select
+                label="Fach"
+                placeholder="Bitte Fach auswählen"
+                data={
+                  subjects?.map((s) => ({
+                    label: s.name,
+                    value: s.id,
+                  })) ?? []
+                }
+                {...form.getInputProps('subjectId')}
+              ></Select>
 
-            <Group position="right">
-              <Button variant="subtle" color="gray">
-                Abbrechen
-              </Button>
-              <Button type="submit">Erstellen</Button>
-            </Group>
-          </Stack>
-        </form>
-      </Container>
-    </BasicLayout>
+              <Group position="right">
+                <Button variant="subtle" color="gray">
+                  Abbrechen
+                </Button>
+                <Button type="submit">Erstellen</Button>
+              </Group>
+            </Stack>
+          </form>
+        </Container>
+      </BasicLayout>
+    </>
   );
 };
 

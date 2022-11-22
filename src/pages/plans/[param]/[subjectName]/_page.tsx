@@ -1,5 +1,6 @@
 import { Container, ScrollArea } from '@mantine/core';
 import { useScrollIntoView } from '@mantine/hooks';
+import Head from 'next/head';
 import { MutableRefObject, RefObject, useEffect, useMemo } from 'react';
 import { ErrorOverlay } from '../../../../components/overlays/error';
 import { LoadOverlay } from '../../../../components/overlays/load';
@@ -43,6 +44,11 @@ export const SubjectPlanPage = ({ semesterId, subjectName }: SubjectPlanPageProp
 
   return (
     <>
+      <Head>
+        <title>
+          Semesterplan {subject?.name} {semester?.id} | IDPA
+        </title>
+      </Head>
       <BasicLayout
         sidebarContent={<PlanSidebar activeSemesterId={semesterId} activeSubjectId={subject?.id} />}
         asideContent={semester && subject && <SubjectPlanAside semester={semester.id} subjectId={subject.id} />}

@@ -1,6 +1,7 @@
 import { Button, Container, Group, Stack, Text, Title } from '@mantine/core';
 import { useDisclosure, useScrollIntoView } from '@mantine/hooks';
 import { NextPage } from 'next';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { EditPlanAside } from '../../../../components/pages/plans/[param]/edit/aside';
 import { CreateMaterialModal } from '../../../../components/pages/plans/[param]/edit/create-material';
@@ -29,32 +30,37 @@ const Page: NextPage = () => {
   }
 
   return (
-    <BasicLayout asideContent={plan && <EditPlanAside planId={plan.id} />}>
-      <Container>
-        <Group position="apart" align="center">
-          <Group>
-            <TablerIconComponent size={40} name={plan?.subject?.icon} />
-            <Stack spacing={4}>
-              <Title order={3}>Semesterplan bearbeiten</Title>
-              <Text weight={500}>
-                {plan?.subject?.name} - {plan?.semesterId}
-              </Text>
-            </Stack>
-          </Group>
+    <>
+      <Head>
+        <title>Semesterplan bearbeiten | IDPA</title>
+      </Head>
+      <BasicLayout asideContent={plan && <EditPlanAside planId={plan.id} />}>
+        <Container>
+          <Group position="apart" align="center">
+            <Group>
+              <TablerIconComponent size={40} name={plan?.subject?.icon} />
+              <Stack spacing={4}>
+                <Title order={3}>Semesterplan bearbeiten</Title>
+                <Text weight={500}>
+                  {plan?.subject?.name} - {plan?.semesterId}
+                </Text>
+              </Stack>
+            </Group>
 
-          <Group align="center">
-            <Button variant="subtle" color="gray" onClick={() => scrollIntoView({ alignment: 'center' })}>
-              Nächster Termin
-            </Button>
-            <Button onClick={newThemeModal.open}>Neues Thema</Button>
-            <CreateThemeModal opened={newThemeModalOpened} closeModal={newThemeModal.close} items={items} plan={plan} />
+            <Group align="center">
+              <Button variant="subtle" color="gray" onClick={() => scrollIntoView({ alignment: 'center' })}>
+                Nächster Termin
+              </Button>
+              <Button onClick={newThemeModal.open}>Neues Thema</Button>
+              <CreateThemeModal opened={newThemeModalOpened} closeModal={newThemeModal.close} items={items} plan={plan} />
+            </Group>
           </Group>
-        </Group>
-        <Group></Group>
+          <Group></Group>
 
-        {plan && <PlanEditList targetRef={targetRef} scrollableRef={scrollableRef} plan={plan} />}
-      </Container>
-    </BasicLayout>
+          {plan && <PlanEditList targetRef={targetRef} scrollableRef={scrollableRef} plan={plan} />}
+        </Container>
+      </BasicLayout>
+    </>
   );
 };
 

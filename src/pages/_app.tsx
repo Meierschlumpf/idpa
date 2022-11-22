@@ -3,6 +3,7 @@ import { MantineProvider } from '@mantine/core';
 import { NotificationsProvider } from '@mantine/notifications';
 import type { Session } from 'next-auth';
 import type { AppType } from 'next/app';
+import Head from 'next/head';
 import { useEffect } from 'react';
 import { LoadOverlay } from '../components/overlays/load';
 import { useAuthStore } from '../stores/auth-store';
@@ -28,19 +29,25 @@ const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { .
   }, [colorScheme]);
 
   return (
-    <MantineProvider
-      withGlobalStyles
-      withNormalizeCSS
-      theme={{
-        /** Put your mantine theme override here */
-        colorScheme: theme,
-      }}
-    >
-      <NotificationsProvider>
-        <LoadOverlay visible={isLoading} />
-        {!isLoading && <Component {...pageProps} />}
-      </NotificationsProvider>
-    </MantineProvider>
+    <>
+      <Head>
+        <title>IDPA</title>
+        <meta name="description" content="Ein Tool zur Verwaltung von Semesterplänen" />
+      </Head>
+      <MantineProvider
+        withGlobalStyles
+        withNormalizeCSS
+        theme={{
+          /** Put your mantine theme override here */
+          colorScheme: theme,
+        }}
+      >
+        <NotificationsProvider>
+          <LoadOverlay visible={isLoading} />
+          {!isLoading && <Component {...pageProps} />}
+        </NotificationsProvider>
+      </MantineProvider>
+    </>
   );
 };
 
