@@ -50,7 +50,15 @@ export const BasicHeader = ({}: BasicHeaderProps) => {
           </Group>
 
           <Group>
-            <Select withinPortal value={role} data={['student', 'teacher']} onChange={handleRoleChange} />
+            <Select
+              withinPortal
+              value={role}
+              data={[
+                { value: 'student', label: 'Schüler/-in' },
+                { value: 'teacher', label: 'Lehrperson' },
+              ]}
+              onChange={handleRoleChange}
+            />
             <ActionIcon
               variant="default"
               onClick={() => {
