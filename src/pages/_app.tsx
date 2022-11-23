@@ -14,7 +14,7 @@ import { trpc } from '../utils/trpc';
 const colorScheme = 'dark';
 
 const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { ...pageProps } }) => {
-  const { data: role, isLoading } = trpc.activeRole.current.useQuery();
+  const { data: role, isLoading, isLoadingError } = trpc.activeRole.current.useQuery();
   const setRole = useAuthStore((x) => x.setRole);
   const theme = useThemeStore((x) => x.theme);
 
@@ -22,6 +22,8 @@ const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { .
     if (!role) return;
     setRole(role.name);
   }, [role]);
+
+  console.log(role);
 
   useEffect(() => {
     if (typeof document === 'undefined') return;
