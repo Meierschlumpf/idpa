@@ -1,6 +1,6 @@
 import { Stack } from '@mantine/core';
 import { RefObject } from 'react';
-import { vacationDefinitions } from '../../../../constants/vacations';
+import { freeDaysDefinition, vacationDefinitions } from '../../../../constants/vacations';
 import { getWeekNumber } from '../../../../helpers/time/get-week-number';
 import { AppRouterTypes } from '../../../../utils/trpc';
 import { PlanWeekLessonItem } from './lessonsItem';
@@ -11,11 +11,12 @@ import { PlanWeekVacationItem } from './vacationItem';
 interface SemesterPlanListProps {
   lessons: AppRouterTypes['planItem']['getBySemesterId']['output'];
   vacations: typeof vacationDefinitions;
+  freeDays: typeof freeDaysDefinition;
   targetRef?: RefObject<HTMLDivElement>;
 }
 
-export const SemesterPlanList = ({ lessons, vacations, targetRef }: SemesterPlanListProps) => {
-  const items = reduceVacationsAndLessons(lessons, vacations);
+export const SemesterPlanList = ({ lessons, vacations, freeDays, targetRef }: SemesterPlanListProps) => {
+  const items = reduceVacationsAndLessons(lessons, vacations, freeDays);
 
   const nextLessonId = useNextLessonId(lessons);
   const nextVacation = useVacationHighliters(vacations);
@@ -37,7 +38,7 @@ export const SemesterPlanList = ({ lessons, vacations, targetRef }: SemesterPlan
   );
 };
 
-const reduceVacationsAndLessons = (items: AppRouterTypes['planItem']['getBySemesterId']['output'], vacations: typeof vacationDefinitions) => {
+const reduceVacationsAndLessons = (items: AppRouterTypes['planItem']['getBySemesterId']['output'], vacations: typeof vacationDefinitions, freeDays: typeof freeDaysDefinition) => {
   const weekItems = items
     .reduce((list: ReducedLesson[], item) => {
       const itemYear = item.date.getFullYear();
@@ -52,6 +53,7 @@ const reduceVacationsAndLessons = (items: AppRouterTypes['planItem']['getBySemes
         week: itemWeek,
         year: itemYear,
         items: [item],
+        holidays: freeDays.filter((fdd) => getWeekNumber(fdd.start) == itemWeek),
       });
       return list;
     }, [])
@@ -76,6 +78,7 @@ interface ReducedLesson {
   week: number;
   year: number;
   items: AppRouterTypes['planItem']['getBySemesterId']['output'];
+  holidays: typeof freeDaysDefinition;
 }
 
 export interface ReducedSortableLesson extends ReducedLesson {

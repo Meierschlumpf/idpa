@@ -1,7 +1,7 @@
 import { Center, ScrollArea, Stack, Text } from '@mantine/core';
 import { useScrollIntoView } from '@mantine/hooks';
 import { MutableRefObject, RefObject } from 'react';
-import { vacationDefinitions } from '../../../../../constants/vacations';
+import { freeDaysDefinition, vacationDefinitions } from '../../../../../constants/vacations';
 import { AppRouterTypes, trpc } from '../../../../../utils/trpc';
 import { PlanEditItem, PlanEditItemMapperProps } from './item';
 
@@ -68,6 +68,19 @@ export const PlanEditList = ({ plan, scrollableRef, targetRef }: PlanEditListPro
               },
               sortBy: vacation.start,
             }))
+          )
+          .concat(
+            freeDaysDefinition
+              .filter((x) => x.end >= plan.semester.start && x.start <= plan.semester.end)
+              .filter((fdd) => !vacationDefinitions.some((vd) => fdd.start.getTime() >= vd.start.getTime() && fdd.end.getTime() <= vd.end.getTime()))
+              .map((fdd) => ({
+                type: 'holiday',
+                props: {
+                  ...fdd,
+                  showKw: true,
+                },
+                sortBy: fdd.start,
+              }))
           )
           .sort((a, b) => a.sortBy.getTime() - b.sortBy.getTime())
           .map((props, key) => (

@@ -1,16 +1,15 @@
 import { Container, ScrollArea } from '@mantine/core';
 import { useScrollIntoView } from '@mantine/hooks';
 import Head from 'next/head';
-import { MutableRefObject, RefObject, useEffect, useMemo } from 'react';
+import { MutableRefObject, useEffect, useMemo } from 'react';
 import { ErrorOverlay } from '../../../../components/overlays/error';
 import { LoadOverlay } from '../../../../components/overlays/load';
 import { NoItemsOverlay } from '../../../../components/overlays/no-items';
-import { SemesterPlanList } from '../../../../components/pages/plans/[param]/list';
 import { SubjectPlanAside } from '../../../../components/pages/plans/[param]/[subjectName]/aside';
 import { SemesterSubjectPlanList } from '../../../../components/pages/plans/[param]/[subjectName]/list';
 import { PlanSidebar } from '../../../../components/plan/sidebar';
 import { PlanTitle } from '../../../../components/plan/title';
-import { vacationDefinitions } from '../../../../constants/vacations';
+import { freeDaysDefinition, vacationDefinitions } from '../../../../constants/vacations';
 import { BasicLayout } from '../../../../layout/basic';
 import { trpc } from '../../../../utils/trpc';
 
@@ -27,7 +26,7 @@ export const SubjectPlanPage = ({ semesterId, subjectName }: SubjectPlanPageProp
     routeName: subjectName,
   });
   const { data: items, ...itemsQuery } = usePlanItems(semesterId, subject?.id);
-  const vacations = useVacations(semesterId);
+  const { vacations, freeDays } = useFreeDaysAndVacations(semesterId);
 
   const isLoading = subjectQuery.isLoading || semesterQuery.isLoading || itemsQuery.isLoading;
   const isError = subjectQuery.isError || semesterQuery.isError || itemsQuery.isError;
@@ -68,7 +67,7 @@ export const SubjectPlanPage = ({ semesterId, subjectName }: SubjectPlanPageProp
             <LoadOverlay visible={isLoading} />
             <ErrorOverlay visible={isError} />
             <NoItemsOverlay visible={!isLoading && !isError && items?.length === 0} />
-            {items && subject && <SemesterSubjectPlanList lessons={items} vacations={vacations} subject={subject} targetRef={targetRef as MutableRefObject<HTMLDivElement>} />}
+            {items && subject && <SemesterSubjectPlanList freeDays={freeDays} lessons={items} vacations={vacations} subject={subject} targetRef={targetRef as MutableRefObject<HTMLDivElement>} />}
           </ScrollArea>
         </Container>
       </BasicLayout>
@@ -89,15 +88,23 @@ const usePlanItems = (semesterId: string, subjectId?: string) => {
   );
 };
 
-const useVacations = (semesterId: string) => {
+const useFreeDaysAndVacations = (semesterId: string) => {
   const { data: semester } = trpc.semester.getById.useQuery(
     {
       id: semesterId,
     },
     { retry: false }
   );
-  return useMemo(() => {
+  const vacations = useMemo(() => {
     if (!semester) return [];
     return vacationDefinitions.filter((v) => v.end >= semester.start && v.start <= semester.end);
   }, [semester]);
+  const freeDays = useMemo(() => {
+    if (!semester) return [];
+    return freeDaysDefinition.filter((v) => v.end >= semester.start && v.start <= semester.end);
+  }, [semester]);
+  return {
+    vacations,
+    freeDays,
+  };
 };

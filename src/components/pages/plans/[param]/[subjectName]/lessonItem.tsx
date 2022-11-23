@@ -1,4 +1,5 @@
 import { MutableRefObject } from 'react';
+import { PlanHolidayItem } from '../../../../plan/item/holiday';
 import { PlanLessonItem } from '../../../../plan/item/lesson';
 import { ReducedSortableLesson } from './list';
 
@@ -7,13 +8,28 @@ interface PlanSubjectWeekLessonItemProps {
   nextId?: string;
   targetRef: MutableRefObject<HTMLDivElement>;
 }
-export const PlanSubjectWeekLessonItem = ({ item: { week, items }, nextId, targetRef }: PlanSubjectWeekLessonItemProps) => {
+export const PlanSubjectWeekLessonItem = ({ item: { week, items, holidays }, nextId, targetRef }: PlanSubjectWeekLessonItemProps) => {
   const containsNext = items.some((i) => i.id === nextId);
   return (
     <>
-      {items.map((item, index) => (
-        <PlanLessonItem key={item.id} item={item} isNext={containsNext} targetRef={containsNext ? targetRef : undefined} />
-      ))}
+      {(
+        items.map((i) => ({
+          type: 'lesson',
+          sortBy: i.date,
+          ...i,
+        })) as any[]
+      )
+        .concat(
+          holidays.map((i) => ({
+            type: 'holiday',
+            sortBy: i.start,
+            ...i,
+          }))
+        )
+        .sort((a, b) => a.sortBy.getTime() - b.sortBy.getTime())
+        .map((item) =>
+          item.type === 'holiday' ? <PlanHolidayItem showKw {...item} /> : <PlanLessonItem key={item.id} item={item} isNext={containsNext} targetRef={containsNext ? targetRef : undefined} />
+        )}
     </>
   );
 };

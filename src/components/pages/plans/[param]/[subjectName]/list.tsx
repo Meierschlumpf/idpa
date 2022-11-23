@@ -1,6 +1,6 @@
 import { Stack } from '@mantine/core';
 import { MutableRefObject } from 'react';
-import { vacationDefinitions } from '../../../../../constants/vacations';
+import { freeDaysDefinition, vacationDefinitions } from '../../../../../constants/vacations';
 import { getWeekNumber } from '../../../../../helpers/time/get-week-number';
 import { AppRouterTypes } from '../../../../../utils/trpc';
 import { useNextLessonId } from '../use-next-lesson-id';
@@ -12,11 +12,12 @@ interface SemesterSubjectPlanListProps {
   lessons: AppRouterTypes['planItem']['getBySemesterId']['output'];
   vacations: typeof vacationDefinitions;
   subject: Exclude<AppRouterTypes['subject']['getByRouteName']['output'], null>;
+  freeDays: typeof freeDaysDefinition;
   targetRef: MutableRefObject<HTMLDivElement>;
 }
 
-export const SemesterSubjectPlanList = ({ lessons, vacations, subject, targetRef }: SemesterSubjectPlanListProps) => {
-  const items = reduceVacationsAndLessons(lessons, vacations);
+export const SemesterSubjectPlanList = ({ lessons, vacations, subject, freeDays, targetRef }: SemesterSubjectPlanListProps) => {
+  const items = reduceVacationsAndLessons(lessons, vacations, freeDays);
 
   const nextLessonId = useNextLessonId(lessons);
   const nextVacation = useVacationHighliters(vacations);
@@ -38,7 +39,7 @@ export const SemesterSubjectPlanList = ({ lessons, vacations, subject, targetRef
   );
 };
 
-const reduceVacationsAndLessons = (items: AppRouterTypes['planItem']['getBySemesterId']['output'], vacations: typeof vacationDefinitions) => {
+const reduceVacationsAndLessons = (items: AppRouterTypes['planItem']['getBySemesterId']['output'], vacations: typeof vacationDefinitions, freeDays: typeof freeDaysDefinition) => {
   const weekItems = items
     .reduce((list: ReducedLesson[], item) => {
       const itemYear = item.date.getFullYear();
@@ -53,6 +54,7 @@ const reduceVacationsAndLessons = (items: AppRouterTypes['planItem']['getBySemes
         week: itemWeek,
         year: itemYear,
         items: [item],
+        holidays: freeDays.filter((fdd) => getWeekNumber(fdd.start) == itemWeek),
       });
       return list;
     }, [])
@@ -63,6 +65,19 @@ const reduceVacationsAndLessons = (items: AppRouterTypes['planItem']['getBySemes
     })) as ReducedVacationAndLesson[];
   return weekItems
     .concat(
+      freeDays
+        .filter((fdd) => !vacationDefinitions.some((x) => x.start <= fdd.start && x.end > fdd.end))
+        .filter((fdd) => !items.some((i) => getWeekNumber(i.date) === getWeekNumber(fdd.start)))
+        .map((fdd) => ({
+          type: 'week',
+          week: getWeekNumber(fdd.start),
+          year: fdd.start.getFullYear(),
+          items: [],
+          holidays: [fdd],
+          sortBy: fdd.start,
+        }))
+    )
+    .concat(
       vacations.map((v) => ({
         type: 'vacation',
         item: v,
@@ -71,6 +86,14 @@ const reduceVacationsAndLessons = (items: AppRouterTypes['planItem']['getBySemes
     )
     .sort((a, b) => a.sortBy.getTime() - b.sortBy.getTime());
 };
+
+interface ReducedLesson {
+  type: 'week';
+  week: number;
+  year: number;
+  items: AppRouterTypes['planItem']['getBySemesterId']['output'];
+  holidays: typeof freeDaysDefinition;
+}
 
 interface ReducedLesson {
   type: 'week';

@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { vacationDefinitions } from '../../../constants/vacations';
+import { freeDaysDefinition, vacationDefinitions } from '../../../constants/vacations';
 import { publicProcedure, router } from '../trpc';
 
 export const planRouter = router({
@@ -54,7 +54,8 @@ export const planRouter = router({
       let nextDay = new Date(semester.start.getFullYear(), semester.start.getMonth(), semester.start.getDate() + difference, input.startTime.getHours(), input.startTime.getMinutes(), 0);
 
       while (nextDay.getTime() <= semester.end.getTime()) {
-        if (!vacationDefinitions.some((v) => v.start.getTime() <= nextDay.getTime() && v.end.getTime() >= nextDay.getTime())) {
+        const isFreeDay = freeDaysDefinition.some((fd) => fd.start.getTime() <= nextDay.getTime() && fd.end.getTime() >= nextDay.getTime());
+        if (!vacationDefinitions.some((v) => v.start.getTime() <= nextDay.getTime() && v.end.getTime() >= nextDay.getTime()) && !isFreeDay) {
           await ctx.prisma.planItem.create({
             data: {
               date: nextDay,
