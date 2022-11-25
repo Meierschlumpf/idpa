@@ -7,7 +7,6 @@ const getHtml = (inputDelta: Delta) => {
   var tempCont = document.createElement('div');
   new Quill(tempCont).setContents(inputDelta);
   const html = tempCont.getElementsByClassName('ql-editor')[0]?.innerHTML;
-  console.log(html);
   return html === '<p><br></p>' ? undefined : html;
 };
 

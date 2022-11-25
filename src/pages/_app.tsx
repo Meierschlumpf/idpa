@@ -23,8 +23,6 @@ const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { .
     setRole(role.name);
   }, [role]);
 
-  console.log(role);
-
   useEffect(() => {
     if (typeof document === 'undefined') return;
     document.body.setAttribute('data-color-scheme', colorScheme);

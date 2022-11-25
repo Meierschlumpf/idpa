@@ -18,6 +18,30 @@ export const taskRouter = router({
         },
       });
     }),
+  getNextWeeks: publicProcedure
+    .input(
+      z.object({
+        weekCount: z.number().default(5),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const now = new Date();
+      const inXWeeks = new Date(now.getFullYear(), now.getMonth(), now.getDate() + input.weekCount * 7);
+      return await ctx.prisma.task.findMany({
+        where: {
+          planItem: {
+            date: {
+              gt: now,
+              lte: inXWeeks,
+            },
+          },
+        },
+        include: {
+          materials: true,
+          planItem: true,
+        },
+      });
+    }),
   create: publicProcedure
     .input(
       z.object({

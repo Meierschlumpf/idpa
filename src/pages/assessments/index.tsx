@@ -1,5 +1,9 @@
 import { Card, Container, Group, Stack, Text, ThemeIcon, Title, Tooltip, useMantineTheme } from '@mantine/core';
 import { IconClipboardCheck } from '@tabler/icons';
+import Head from 'next/head';
+import { ErrorOverlay } from '../../components/overlays/error';
+import { LoadOverlay } from '../../components/overlays/load';
+import { NoItemsOverlay } from '../../components/overlays/no-items';
 import { TablerIconComponent } from '../../components/tablerIcon';
 import { formatDay } from '../../helpers/time/format';
 import { getWeekNumber } from '../../helpers/time/get-week-number';
@@ -7,61 +11,69 @@ import { BasicLayout } from '../../layout/basic';
 import { trpc } from '../../utils/trpc';
 
 const AssessmentsPage = () => {
-  const { data: assessments } = trpc.assessment.getAll.useQuery();
+  const { data: assessments, isLoading, isError } = trpc.assessment.getAll.useQuery();
   const { data: subjects } = trpc.subject.getAll.useQuery();
   const { shadows, colorScheme } = useMantineTheme();
 
   return (
-    <BasicLayout>
-      <Container>
-        <Stack>
-          <Title order={2}>Prüfungen und Abgaben</Title>
-          {assessments?.map((a) => {
-            const subject = subjects?.find((s) => s.id === a.item.plan.subjectId);
+    <>
+      <Head>
+        <title>Prüfungen | IDPA</title>
+      </Head>
+      <BasicLayout>
+        <Container>
+          <Stack>
+            <Title order={2}>Prüfungen und Abgaben</Title>
+            <LoadOverlay visible={isLoading} />
+            <ErrorOverlay visible={isError} />
+            <NoItemsOverlay visible={!isLoading && !isError && assessments?.length === 0} />
+            {assessments?.map((a) => {
+              const subject = subjects?.find((s) => s.id === a.item.plan.subjectId);
 
-            return (
-              <Card
-                withBorder
-                shadow="md"
-                style={{
-                  boxShadow: shadows.md.replaceAll(/rgba\((\d,\s){3}\d.\d{2}\)/g, shadowColors[a.badge.name as keyof typeof shadowColors]),
-                  color: colors[a.badge.name as keyof typeof colors][colorScheme],
-                }}
-              >
-                <Group position="apart">
-                  <Group align="center" spacing="xs">
-                    <Title order={3}>{getBadgeName(a.badge.name)}</Title>
-                    {(a.evaluated || a.badge.name === 'exam') && (
-                      <Tooltip label="Wird bewertet">
-                        <ThemeIcon
-                          style={{
-                            color: 'inherit',
-                            background: 'transparent',
-                          }}
-                        >
-                          <IconClipboardCheck />
-                        </ThemeIcon>
-                      </Tooltip>
-                    )}
+              return (
+                <Card
+                  withBorder
+                  shadow="md"
+                  style={{
+                    boxShadow: shadows.md.replaceAll(/rgba\((\d,\s){3}\d.\d{2}\)/g, shadowColors[a.badge.name as keyof typeof shadowColors]),
+                    color: colors[a.badge.name as keyof typeof colors][colorScheme],
+                  }}
+                >
+                  <Group position="apart">
+                    <Group align="center" spacing="xs">
+                      <Title order={3}>{getBadgeName(a.badge.name)}</Title>
+                      {(a.evaluated || a.badge.name === 'exam') && (
+                        <Tooltip label="Wird bewertet">
+                          <ThemeIcon
+                            style={{
+                              color: 'inherit',
+                              background: 'transparent',
+                            }}
+                          >
+                            <IconClipboardCheck />
+                          </ThemeIcon>
+                        </Tooltip>
+                      )}
+                    </Group>
+                    <Group>
+                      <TablerIconComponent name={subject?.icon} />
+                      <Title order={4}>{subject?.name}</Title>
+                    </Group>
                   </Group>
-                  <Group>
-                    <TablerIconComponent name={subject?.icon} />
-                    <Title order={4}>{subject?.name}</Title>
+                  <Group position="apart">
+                    <Group>
+                      <Text weight={500} color="dimmed">
+                        KW {getWeekNumber(a.item.date)} - {formatDay(a.item.date)}
+                      </Text>
+                    </Group>
                   </Group>
-                </Group>
-                <Group position="apart">
-                  <Group>
-                    <Text weight={500} color="dimmed">
-                      KW {getWeekNumber(a.item.date)} - {formatDay(a.item.date)}
-                    </Text>
-                  </Group>
-                </Group>
-              </Card>
-            );
-          })}
-        </Stack>
-      </Container>
-    </BasicLayout>
+                </Card>
+              );
+            })}
+          </Stack>
+        </Container>
+      </BasicLayout>
+    </>
   );
 };
 

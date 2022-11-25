@@ -11,6 +11,9 @@ import { ItemDescription } from './plan/item/description';
 import { TablerIconComponent } from './tablerIcon';
 import { EditPlanItemTasks } from './pages/plans/[param]/edit/tasks';
 import { PlanItemEditMenu } from './plan/item/edit-menu';
+import { NoItemsOverlay } from './overlays/no-items';
+import { ErrorOverlay } from './overlays/error';
+import { LoadOverlay } from './overlays/load';
 
 interface DashboardPlanItemListProps {}
 
@@ -34,11 +37,15 @@ export const DashboardPlanItemList = ({}: DashboardPlanItemListProps) => {
       year: itemYear,
       items: [curr],
       sortBy: curr.date,
+      holidays: [],
     });
     return prev;
   }, [] as ReducedSortableLesson[]);
   return (
     <Stack>
+      <LoadOverlay visible={isLoading} />
+      <ErrorOverlay visible={isError} />
+      <NoItemsOverlay visible={reducedItems?.length === 0} />
       {reducedItems?.map((item, outerIndex) => (
         <Stack mt={outerIndex === 0 ? 0 : 'lg'} spacing="sm">
           <Title order={4}>KW {item.week}</Title>

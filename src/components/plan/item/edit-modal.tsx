@@ -153,7 +153,6 @@ export const PlanItemEditModal = ({ planId, item, opened, closeModal }: Props) =
                 if (descriptionRef.current === current || (current === '{"ops":[{"insert":"\\n"}]}' && hasEditedRef.current === false && item.description)) {
                   return;
                 }
-                console.log(current);
                 hasEditedRef.current = true;
                 descriptionRef.current = current;
                 form.setFieldValue('description', current);
