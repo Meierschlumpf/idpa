@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
   // Further reading:
   // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
@@ -16,9 +16,9 @@ datasource db {
 
 model Subject {
   id        String @id @default(cuid())
-  name      String
-  routeName String
-  icon      String
+  name      String @db.Text
+  routeName String @db.Text
+  icon      String @db.Text
   plans     Plan[]
 }
 
@@ -37,8 +37,8 @@ model Plan {
 
 model ReferenceMaterial {
   id        String     @id @default(cuid())
-  name      String
-  link      String
+  name      String     @db.Text
+  link      String     @db.Text
   planId    String
   plan      Plan       @relation(fields: [planId], references: [id])
   tasks     Task[]
@@ -47,8 +47,8 @@ model ReferenceMaterial {
 
 model Task {
   id          String              @id @default(cuid())
-  title       String
-  description String?
+  title       String              @db.Text
+  description String?             @db.Text
   planItemId  String
   planItem    PlanItem            @relation(fields: [planItemId], references: [id])
   materials   ReferenceMaterial[]
@@ -57,8 +57,8 @@ model Task {
 
 model Homework {
   id          String              @id @default(cuid())
-  title       String
-  description String?
+  title       String              @db.Text
+  description String?             @db.Text
   planItemId  String
   planItem    PlanItem            @relation(fields: [planItemId], references: [id])
   materials   ReferenceMaterial[]
@@ -79,8 +79,8 @@ model Semster {
 model PlanItem {
   id          String          @id @default(cuid())
   date        DateTime
-  title       String?
-  description String?
+  title       String?         @db.Text
+  description String?         @db.Text
   planId      String
   badges      PlanItemBadge[]
   tasks       Task[]
@@ -95,11 +95,11 @@ model PlanItemBadge {
   item      PlanItem  @relation(fields: [itemId], references: [id])
   badge     PlanBadge @relation(fields: [badgeId], references: [id])
 
-  @@id([itemId, badgeId])
+  @@id([itemId, badgeId], name: "PlanItemBadge_itemId_badgeId_key")
 }
 
 model PlanBadge {
   id    String          @id @default(cuid())
-  name  String
+  name  String          @db.Text
   items PlanItemBadge[]
 }
