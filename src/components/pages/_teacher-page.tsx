@@ -1,7 +1,7 @@
 import { Stack } from '@mantine/core';
-import { DashboardPlanList } from '../components/dashboard-plan-list';
-import { DashboardPlanItemList } from '../components/dashboard-planitem-list';
-import { trpc } from '../utils/trpc';
+import { DashboardPlanList } from '../dashboard-plan-list';
+import { DashboardPlanItemList } from '../dashboard-planitem-list';
+import { trpc } from '../../utils/trpc';
 
 export const TeacherHomePage = () => {
   const { data: items, isLoading, isError } = usePlanItems();
