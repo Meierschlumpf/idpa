@@ -14,9 +14,7 @@ import { ItemDescription } from './plan/item/description';
 import { PlanItemEditMenu } from './plan/item/edit-menu';
 import { TablerIconComponent } from './tablerIcon';
 
-interface DashboardPlanItemListProps {}
-
-export const DashboardPlanItemList = ({}: DashboardPlanItemListProps) => {
+export const DashboardPlanItemList = () => {
   const { data: subjects } = trpc.subject.getAll.useQuery();
   const { data: items, isLoading, isError } = usePlanItems();
   const role = useAuthStore((x) => x.role);
