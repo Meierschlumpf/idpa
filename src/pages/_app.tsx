@@ -1,7 +1,6 @@
 // src/pages/_app.tsx
 import { MantineProvider } from '@mantine/core';
 import { NotificationsProvider } from '@mantine/notifications';
-import type { Session } from 'next-auth';
 import type { AppType } from 'next/app';
 import Head from 'next/head';
 import { useEffect } from 'react';
@@ -13,7 +12,7 @@ import { trpc } from '../utils/trpc';
 
 const colorScheme = 'dark';
 
-const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { ...pageProps } }) => {
+const MyApp: AppType<{ session: any | null }> = ({ Component, pageProps: { ...pageProps } }) => {
   const { data: role, isLoading, isLoadingError } = trpc.activeRole.current.useQuery();
   const setRole = useAuthStore((x) => x.setRole);
   const theme = useThemeStore((x) => x.theme);
