@@ -37,7 +37,7 @@ const AssessmentsPage = () => {
                   shadow="md"
                   style={{
                     boxShadow: shadows.md.replaceAll(/rgba\((\d,\s){3}\d.\d{2}\)/g, shadowColors[a.badge.name as keyof typeof shadowColors]),
-                    color: colors[a.badge.name as keyof typeof colors][colorScheme],
+                    color: colors[a.badge.name as keyof typeof colors]?.[colorScheme],
                   }}
                 >
                   <Group position="apart">
