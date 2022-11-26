@@ -1064,7 +1064,7 @@ export const generateNextSemesterEntries = async () => {
             title: 'Gerichtsbesuch',
             badges: {
               create: {
-                evaluated: true,
+                evaluated: false,
                 badgeId: badges.find((x) => x.name === 'excursion')!.id,
               },
             },
