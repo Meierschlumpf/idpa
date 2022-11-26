@@ -10,10 +10,7 @@ export const activeRoleRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      await ctx.prisma.activeRole.update({
-        where: {
-          name: input.name === 'student' ? 'teacher' : 'student',
-        },
+      await ctx.prisma.activeRole.updateMany({
         data: {
           name: input.name,
         },

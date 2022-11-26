@@ -15,8 +15,8 @@ export const PlanItemTasks = ({ planItem }: PlanItemTasksProps) => {
   return (
     <>
       <PlanItemTaskBase type="read" onHomeworkClick={homeworkModal.open} onTasksClick={taskModal.open} task={planItem.task} homework={planItem.homework} />
-      <TaskListModal opened={taskModalOpened} closeModal={taskModal.close} planItemId={planItem.id} />
-      <HomeworkListModal opened={homeworkModalOpened} closeModal={homeworkModal.close} planItemId={planItem.id} />
+      {taskModalOpened && <TaskListModal opened={taskModalOpened} closeModal={taskModal.close} planItemId={planItem.id} />}
+      {homeworkModalOpened && <HomeworkListModal opened={homeworkModalOpened} closeModal={homeworkModal.close} planItemId={planItem.id} />}
     </>
   );
 };
