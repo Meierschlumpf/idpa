@@ -1,14 +1,14 @@
 import { Card, Group, MantineSize, Skeleton, Stack, Text, ThemeIcon, Title, Tooltip, useMantineTheme } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconClipboardCheck } from '@tabler/icons';
-import { DashboardPlanList } from '../components/dashboard-plan-list';
-import { DashboardPlanItemList } from '../components/dashboard-planitem-list';
-import { ErrorOverlay } from '../components/overlays/error';
-import { TablerIconComponent } from '../components/tablerIcon';
-import { formatDay } from '../helpers/time/format';
-import { getWeekNumber } from '../helpers/time/get-week-number';
-import { useLargerThanMediaQuery } from '../hooks/use-smaller-than-media-query';
-import { trpc } from '../utils/trpc';
+import { DashboardPlanList } from '../dashboard-plan-list';
+import { DashboardPlanItemList } from '../dashboard-planitem-list';
+import { ErrorOverlay } from '../overlays/error';
+import { TablerIconComponent } from '../tablerIcon';
+import { formatDay } from '../../helpers/time/format';
+import { getWeekNumber } from '../../helpers/time/get-week-number';
+import { useLargerThanMediaQuery } from '../../hooks/use-smaller-than-media-query';
+import { trpc } from '../../utils/trpc';
 
 export const StudentHomePage = () => {
   const {

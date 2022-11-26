@@ -2,16 +2,16 @@ import { Container, ScrollArea } from '@mantine/core';
 import { useScrollIntoView } from '@mantine/hooks';
 import Head from 'next/head';
 import { MutableRefObject, useEffect, useMemo } from 'react';
-import { ErrorOverlay } from '../../../../components/overlays/error';
-import { LoadOverlay } from '../../../../components/overlays/load';
-import { NoItemsOverlay } from '../../../../components/overlays/no-items';
-import { SubjectPlanAside } from '../../../../components/pages/plans/[param]/[subjectName]/aside';
-import { SemesterSubjectPlanList } from '../../../../components/pages/plans/[param]/[subjectName]/list';
-import { PlanSidebar } from '../../../../components/plan/sidebar';
-import { PlanTitle } from '../../../../components/plan/title';
-import { freeDaysDefinition, vacationDefinitions } from '../../../../constants/vacations';
-import { BasicLayout } from '../../../../layout/basic';
-import { trpc } from '../../../../utils/trpc';
+import { ErrorOverlay } from '../../../../overlays/error';
+import { LoadOverlay } from '../../../../overlays/load';
+import { NoItemsOverlay } from '../../../../overlays/no-items';
+import { SubjectPlanAside } from './aside';
+import { SemesterSubjectPlanList } from './list';
+import { PlanSidebar } from '../../../../plan/sidebar';
+import { PlanTitle } from '../../../../plan/title';
+import { freeDaysDefinition, vacationDefinitions } from '../../../../../constants/vacations';
+import { BasicLayout } from '../../../../../layout/basic';
+import { trpc } from '../../../../../utils/trpc';
 
 interface SubjectPlanPageProps {
   semesterId: string;

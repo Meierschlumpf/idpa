@@ -3,7 +3,7 @@ import { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Page404 } from '../../../layout/errors/404';
-import { PlanPage } from './_page';
+import { PlanPage } from '../../../components/pages/plans/[param]/_page';
 
 const Page: NextPage = () => {
   const { param } = useRouterParams();
