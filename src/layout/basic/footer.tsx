@@ -8,7 +8,7 @@ export const BasicFooter = () => {
       <Group position="apart">
         <Group align="center" spacing="xs">
           <Text weight={500}>Build with 💖 by Meierschlumpf</Text>
-          <a href="https://github.com/Meierschlumpf" target="_blank">
+          <a href="https://github.com/Meierschlumpf" target="_blank" rel="noreferrer">
             <IconExternalLink />
           </a>
         </Group>

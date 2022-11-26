@@ -1,44 +1,44 @@
 import { planBadges, semesters, subjects } from './_mock';
 
 export const removeEverything = async () => {
-  await prisma?.planItemBadge.deleteMany();
-  await prisma?.planBadge.deleteMany();
-  await prisma?.referenceMaterial.deleteMany();
-  await prisma?.task.deleteMany();
-  await prisma?.homework.deleteMany();
-  await prisma?.planItem.deleteMany();
-  await prisma?.plan.deleteMany();
-  await prisma?.semster.deleteMany();
-  await prisma?.subject.deleteMany();
-  await prisma?.activeRole.deleteMany();
+  await prisma!.planItemBadge.deleteMany();
+  await prisma!.planBadge.deleteMany();
+  await prisma!.referenceMaterial.deleteMany();
+  await prisma!.task.deleteMany();
+  await prisma!.homework.deleteMany();
+  await prisma!.planItem.deleteMany();
+  await prisma!.plan.deleteMany();
+  await prisma!.semster.deleteMany();
+  await prisma!.subject.deleteMany();
+  await prisma!.activeRole.deleteMany();
 };
 
 export const addDefaultValues = async (defaultRole: 'student' | 'teacher') => {
-  await prisma?.activeRole.create({
+  await prisma!.activeRole.create({
     data: {
       name: defaultRole,
     },
   });
   for (let i = 0; i < subjects.length; i++) {
-    await prisma?.subject.create({
+    await prisma!.subject.create({
       data: subjects.at(i)!,
     });
   }
   for (let i = 0; i < semesters.length; i++) {
-    await prisma?.semster.create({
+    await prisma!.semster.create({
       data: semesters.at(i)!,
     });
   }
   for (let i = 0; i < planBadges.length; i++) {
-    await prisma?.planBadge.create({
+    await prisma!.planBadge.create({
       data: planBadges.at(i)!,
     });
   }
 };
 
 export const generateLastSemesterEntries = async () => {
-  const badges = await prisma?.planBadge.findMany()!;
-  const subjects = await prisma?.subject.findMany()!;
+  const badges = await prisma!.planBadge.findMany()!;
+  const subjects = await prisma!.subject.findMany()!;
 
   const referenceMaterials = {
     deutsch: {
@@ -58,7 +58,7 @@ export const generateLastSemesterEntries = async () => {
   };
 
   const deutsch = subjects.find((x) => x.routeName === 'deutsch');
-  await prisma?.plan.create({
+  await prisma!.plan.create({
     data: {
       subjectId: deutsch!.id,
       startTime: 8 * 60 + 15,
@@ -188,7 +188,7 @@ export const generateLastSemesterEntries = async () => {
   });
 
   const physik = subjects.find((x) => x.routeName === 'physik');
-  await prisma?.plan.create({
+  await prisma!.plan.create({
     data: {
       subjectId: physik!.id,
       startTime: 10 * 60 + 5,
@@ -322,7 +322,7 @@ export const generateLastSemesterEntries = async () => {
   });
 
   const mathematik = subjects.find((x) => x.routeName === 'mathematik');
-  await prisma?.plan.create({
+  await prisma!.plan.create({
     data: {
       subjectId: mathematik!.id,
       startTime: 12 * 60 + 40,
@@ -446,7 +446,7 @@ export const generateLastSemesterEntries = async () => {
   });
 
   const wr = subjects.find((x) => x.routeName === 'wirtschaft-recht');
-  await prisma?.plan.create({
+  await prisma!.plan.create({
     data: {
       subjectId: wr!.id,
       startTime: 15 * 60 + 20,
@@ -559,8 +559,8 @@ export const generateLastSemesterEntries = async () => {
 };
 
 export const generateNextSemesterEntries = async () => {
-  const badges = await prisma?.planBadge.findMany()!;
-  const subjects = await prisma?.subject.findMany()!;
+  const badges = await prisma!.planBadge.findMany()!;
+  const subjects = await prisma!.subject.findMany()!;
 
   const referenceMaterials = {
     deutsch: {
@@ -578,7 +578,7 @@ export const generateNextSemesterEntries = async () => {
   };
 
   const deutsch = subjects.find((x) => x.routeName === 'deutsch');
-  await prisma?.plan.create({
+  await prisma!.plan.create({
     data: {
       subjectId: deutsch!.id,
       startTime: 8 * 60 + 15,
@@ -712,7 +712,7 @@ export const generateNextSemesterEntries = async () => {
   });
 
   const physik = subjects.find((x) => x.routeName === 'physik');
-  await prisma?.plan.create({
+  await prisma!.plan.create({
     data: {
       subjectId: physik!.id,
       startTime: 10 * 60 + 5,
@@ -840,7 +840,7 @@ export const generateNextSemesterEntries = async () => {
   });
 
   const mathematik = subjects.find((x) => x.routeName === 'mathematik');
-  await prisma?.plan.create({
+  await prisma!.plan.create({
     data: {
       subjectId: mathematik!.id,
       startTime: 12 * 60 + 40,
@@ -946,7 +946,7 @@ export const generateNextSemesterEntries = async () => {
   });
 
   const wr = subjects.find((x) => x.routeName === 'wirtschaft-recht');
-  await prisma?.plan.create({
+  await prisma!.plan.create({
     data: {
       subjectId: wr!.id,
       startTime: 15 * 60 + 20,

@@ -1,19 +1,18 @@
-import { Card, Group, Stack, Text, Title, useMantineTheme } from '@mantine/core';
+import { Card, Group, Stack, Text, Title } from '@mantine/core';
 import { formatDay } from '../helpers/time/format';
 import { getWeekNumber } from '../helpers/time/get-week-number';
-import { getNextDate } from '../helpers/time/next-date';
 import { useAuthStore } from '../stores/auth-store';
 import { trpc } from '../utils/trpc';
+import { ErrorOverlay } from './overlays/error';
+import { LoadOverlay } from './overlays/load';
+import { NoItemsOverlay } from './overlays/no-items';
+import { EditPlanItemTasks } from './pages/plans/[param]/edit/tasks';
 import { ReducedSortableLesson } from './pages/plans/[param]/list';
 import { PlanItemTasks } from './pages/plans/[param]/tasks';
 import { BadgeList } from './plan/item/badge/list';
 import { ItemDescription } from './plan/item/description';
-import { TablerIconComponent } from './tablerIcon';
-import { EditPlanItemTasks } from './pages/plans/[param]/edit/tasks';
 import { PlanItemEditMenu } from './plan/item/edit-menu';
-import { NoItemsOverlay } from './overlays/no-items';
-import { ErrorOverlay } from './overlays/error';
-import { LoadOverlay } from './overlays/load';
+import { TablerIconComponent } from './tablerIcon';
 
 interface DashboardPlanItemListProps {}
 
@@ -21,7 +20,6 @@ export const DashboardPlanItemList = ({}: DashboardPlanItemListProps) => {
   const { data: subjects } = trpc.subject.getAll.useQuery();
   const { data: items, isLoading, isError } = usePlanItems();
   const role = useAuthStore((x) => x.role);
-  const theme = useMantineTheme();
 
   const reducedItems = items?.reduce((prev, curr) => {
     const itemYear = curr.date.getFullYear();
@@ -47,13 +45,14 @@ export const DashboardPlanItemList = ({}: DashboardPlanItemListProps) => {
       <ErrorOverlay visible={isError} />
       <NoItemsOverlay visible={reducedItems?.length === 0} />
       {reducedItems?.map((item, outerIndex) => (
-        <Stack mt={outerIndex === 0 ? 0 : 'lg'} spacing="sm">
+        <Stack key={`${item.year}-${item.week}`} mt={outerIndex === 0 ? 0 : 'lg'} spacing="sm">
           <Title order={4}>KW {item.week}</Title>
           {item.items.map((item, index) => {
             const subject = subjects?.find((s) => s.id === item.subjectId);
 
             return (
               <Card
+                key={item.id}
                 mt={20}
                 style={{
                   overflow: 'visible',
@@ -89,7 +88,7 @@ export const DashboardPlanItemList = ({}: DashboardPlanItemListProps) => {
                     </Group>
                   )}
                   <Group position={item.badges.length === 0 ? 'right' : 'apart'}>
-                    <BadgeList mode="read" activeBadges={item.badges} handleSwitch={() => {}} handleAddition={() => {}} handleRemoval={() => {}} />
+                    <BadgeList mode="read" activeBadges={item.badges} />
                     {role === 'student' ? <PlanItemTasks planItem={item} /> : <EditPlanItemTasks planId="" planItem={item} />}
                   </Group>
                 </Stack>

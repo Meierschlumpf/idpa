@@ -33,11 +33,12 @@ export const StudentHomePage = () => {
         <ErrorOverlay visible={isError} />
         {!isLoading &&
           !isError &&
-          assessments?.map((a) => {
+          assessments?.map((a, i) => {
             const subject = subjects?.find((s) => s.id === a.item.plan.subjectId);
 
             return (
               <Card
+                key={i}
                 withBorder
                 shadow="md"
                 style={{

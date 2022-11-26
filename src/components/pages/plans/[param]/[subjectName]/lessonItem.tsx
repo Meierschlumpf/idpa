@@ -8,7 +8,7 @@ interface PlanSubjectWeekLessonItemProps {
   nextId?: string;
   targetRef: MutableRefObject<HTMLDivElement>;
 }
-export const PlanSubjectWeekLessonItem = ({ item: { week, items, holidays }, nextId, targetRef }: PlanSubjectWeekLessonItemProps) => {
+export const PlanSubjectWeekLessonItem = ({ item: { items, holidays }, nextId, targetRef }: PlanSubjectWeekLessonItemProps) => {
   const containsNext = items.some((i) => i.id === nextId);
   return (
     <>

@@ -115,7 +115,9 @@ export const TaskCreateModal = ({ opened, closeModal, planId, planItemId }: Task
                         {materials
                           ?.filter((m) => !form.values.materialIds.includes(m.id))
                           .map((m) => (
-                            <Menu.Item onClick={() => handleAdd(m.id)}>{m.name}</Menu.Item>
+                            <Menu.Item key={m.id} onClick={() => handleAdd(m.id)}>
+                              {m.name}
+                            </Menu.Item>
                           ))}
                       </Menu.Dropdown>
                     </Menu>

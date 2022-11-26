@@ -4,7 +4,6 @@ import { useAuthStore } from '../stores/auth-store';
 import { trpc } from '../utils/trpc';
 import { AddPlanDashboardItem } from './add-plan-dashboard-item';
 import { ErrorOverlay } from './overlays/error';
-import { LoadOverlay } from './overlays/load';
 import { PlanDashboardItem } from './plan-dashboard-item';
 
 export const DashboardPlanList = () => {
