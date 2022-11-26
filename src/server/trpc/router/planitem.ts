@@ -277,7 +277,7 @@ export const planItemRouter = router({
     .mutation(async ({ ctx, input }) => {
       await ctx.prisma.planItemBadge.delete({
         where: {
-          itemId_badgeId: {
+          PlanItemBadge_itemId_badgeId_key: {
             itemId: input.itemId,
             badgeId: input.badgeId,
           },
@@ -296,7 +296,7 @@ export const planItemRouter = router({
     .mutation(async ({ ctx, input }) => {
       await ctx.prisma.planItemBadge.update({
         where: {
-          itemId_badgeId: {
+          PlanItemBadge_itemId_badgeId_key: {
             itemId: input.itemId,
             badgeId: input.badgeId,
           },

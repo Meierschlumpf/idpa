@@ -1,5 +1,5 @@
 import { Stack, Title } from '@mantine/core';
-import { RefObject } from 'react';
+import { MutableRefObject, RefObject } from 'react';
 import { trpc } from '../../../../utils/trpc';
 import { PlanHolidayItem } from '../../../plan/item/holiday';
 import { PlanLessonItem } from '../../../plan/item/lesson';
@@ -37,7 +37,7 @@ export const PlanWeekLessonItem = ({ item: { week, items, holidays }, nextId, ta
               key={item.id}
               item={item}
               isNext={containsNext && index === 0}
-              targetRef={containsNext && index === 0 ? targetRef : undefined}
+              targetRef={containsNext && index === 0 ? (targetRef as MutableRefObject<HTMLElement>) : undefined}
               subject={subjects?.find((s) => s.id === item.subjectId)}
               showKw={false}
             />

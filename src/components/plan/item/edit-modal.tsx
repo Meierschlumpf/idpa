@@ -108,16 +108,18 @@ export const PlanItemEditModal = ({ planId, item, opened, closeModal }: Props) =
             Vorschau
           </Text>
           <PlanLessonItem
-            item={{
-              ...item,
-              title: form.values.title ?? null,
-              description: form.values.description ?? null,
-              badges:
-                form.values.badges?.map((x) => ({
-                  ...x,
-                  name: badges?.find((y) => y.id === x.id)?.name ?? 'unknown',
-                })) ?? [],
-            }}
+            item={
+              {
+                ...item,
+                title: form.values.title ?? null,
+                description: form.values.description ?? null,
+                badges:
+                  form.values.badges?.map((x) => ({
+                    ...x,
+                    name: badges?.find((y) => y.id === x.id)?.name ?? 'unknown',
+                  })) ?? [],
+              } as any
+            }
           />
         </Stack>
         <form onSubmit={form.onSubmit(handleSubmit)}>

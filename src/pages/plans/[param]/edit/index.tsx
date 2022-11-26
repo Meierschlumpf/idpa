@@ -52,7 +52,7 @@ const Page: NextPage = () => {
                 Nächster Termin
               </Button>
               <Button onClick={newThemeModal.open}>Neues Thema</Button>
-              <CreateThemeModal opened={newThemeModalOpened} closeModal={newThemeModal.close} items={items} plan={plan} />
+              <CreateThemeModal opened={newThemeModalOpened} closeModal={newThemeModal.close} items={items} plan={plan as any} />
             </Group>
           </Group>
           <Group></Group>

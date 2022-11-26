@@ -67,7 +67,9 @@ export const SubjectPlanPage = ({ semesterId, subjectName }: SubjectPlanPageProp
             <LoadOverlay visible={isLoading} />
             <ErrorOverlay visible={isError} />
             <NoItemsOverlay visible={!isLoading && !isError && items?.length === 0} />
-            {items && subject && <SemesterSubjectPlanList freeDays={freeDays} lessons={items} vacations={vacations} subject={subject} targetRef={targetRef as MutableRefObject<HTMLDivElement>} />}
+            {items && subject && (
+              <SemesterSubjectPlanList freeDays={freeDays} lessons={items as any} vacations={vacations} subject={subject} targetRef={targetRef as MutableRefObject<HTMLDivElement>} />
+            )}
           </ScrollArea>
         </Container>
       </BasicLayout>
