@@ -3,6 +3,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { NextLink } from '@mantine/next';
 import { IconArrowLoopRight, IconMoon, IconRefresh, IconSchool, IconSun } from '@tabler/icons';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 import { useAuthStore } from '../../stores/auth-store';
 import { useThemeStore } from '../../stores/theme-store';
 import { trpc } from '../../utils/trpc';
@@ -24,14 +25,38 @@ export const BasicHeader = ({}: BasicHeaderProps) => {
   const [burgerOpened, burger] = useDisclosure(false);
   const { classes } = useStyles();
   const router = useRouter();
-  const { mutateAsync: resetStudentAsync, isLoading: isStudentLoading } = trpc.reset.student.useMutation();
-  const { mutateAsync: resetTeacherAsync, isLoading: isTeacherLoading } = trpc.reset.teacher.useMutation();
+
+  const [loading, setLoading] = useState(false);
+
+  //  const { mutateAsync: resetStudentAsync, isLoading: isStudentLoading } = trpc.reset.student.useMutation();
+  //  const { mutateAsync: resetTeacherAsync, isLoading: isTeacherLoading } = trpc.reset.teacher.useMutation();
+
+  const { mutateAsync: removeEverythingAsync } = trpc.reset.removeEverything.useMutation();
+  const { mutateAsync: addDefaultValuesAsync } = trpc.reset.addDefaultValues.useMutation();
+  const { mutateAsync: generateLastSemesterEntriesAsync } = trpc.reset.generateLastSemesterEntries.useMutation();
+
   const utils = trpc.useContext();
 
   const resetData = () => {
-    const mutateAsync = role === 'student' ? resetStudentAsync : resetTeacherAsync;
-    mutateAsync().then(() => {
-      utils.invalidate();
+    setLoading(true);
+    removeEverythingAsync(undefined, {
+      onSuccess: () => {
+        addDefaultValuesAsync(
+          {
+            role,
+          },
+          {
+            onSuccess: () => {
+              generateLastSemesterEntriesAsync(undefined, {
+                onSuccess: () => {
+                  setLoading(false);
+                  utils.invalidate();
+                },
+              });
+            },
+          }
+        );
+      },
     });
   };
 
@@ -76,7 +101,7 @@ export const BasicHeader = ({}: BasicHeaderProps) => {
                 <Stack spacing="xs">
                   <Stack spacing={0}>{role === 'student' ? <StudentHeaderNavigation /> : <TeacherHeaderNavigation />}</Stack>
                   <Divider p={0} mx="md" />
-                  <Button onClick={resetData} loading={isStudentLoading || isTeacherLoading}>
+                  <Button onClick={resetData} loading={loading}>
                     Daten zurücksetzen
                   </Button>
                   <Select
@@ -99,7 +124,7 @@ export const BasicHeader = ({}: BasicHeaderProps) => {
 
           <Group>
             <Tooltip label="Daten zurücksetzen">
-              <ActionIcon color="red" variant="light" onClick={resetData} loading={isStudentLoading || isTeacherLoading}>
+              <ActionIcon color="red" variant="light" onClick={resetData} loading={loading}>
                 <IconRefresh size={16} stroke={1.5} />
               </ActionIcon>
             </Tooltip>
