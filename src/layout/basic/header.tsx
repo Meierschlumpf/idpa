@@ -33,7 +33,8 @@ export const BasicHeader = ({}: BasicHeaderProps) => {
 
   const { mutateAsync: removeEverythingAsync } = trpc.reset.removeEverything.useMutation();
   const { mutateAsync: addDefaultValuesAsync } = trpc.reset.addDefaultValues.useMutation();
-  const { mutateAsync: generateLastSemesterEntriesAsync } = trpc.reset.generateLastSemesterEntries.useMutation();
+  const { mutateAsync: generateLastSemesterEntriesAsync } = trpc.reset.generateLastSemesterEntries1.useMutation();
+  const { mutateAsync: generateLastSemesterEntries2Async } = trpc.reset.generateLastSemesterEntries2.useMutation();
 
   const utils = trpc.useContext();
 
@@ -49,8 +50,12 @@ export const BasicHeader = ({}: BasicHeaderProps) => {
             onSuccess: () => {
               generateLastSemesterEntriesAsync(undefined, {
                 onSuccess: () => {
-                  setLoading(false);
-                  utils.invalidate();
+                  generateLastSemesterEntries2Async(undefined, {
+                    onSuccess: () => {
+                      setLoading(false);
+                      utils.invalidate();
+                    },
+                  });
                 },
               });
             },

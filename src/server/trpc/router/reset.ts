@@ -1,5 +1,11 @@
 import { z } from 'zod';
-import { addDefaultValues, generateLastSemesterEntries, generateNextSemesterEntries, removeEverything } from '../../../pages/api/reset/_helper';
+import {
+  addDefaultValues,
+  generateLastSemesterEntries as generateLastSemesterEntries1,
+  generateLastSemesterEntries2,
+  generateNextSemesterEntries,
+  removeEverything,
+} from '../../../pages/api/reset/_helper';
 import { publicProcedure, router } from '../trpc';
 
 export const resetRouter = router({
@@ -7,13 +13,13 @@ export const resetRouter = router({
     await removeEverything(ctx.prisma);
 
     await addDefaultValues(ctx.prisma, 'student');
-    await generateLastSemesterEntries(ctx.prisma);
+    await generateLastSemesterEntries1(ctx.prisma);
     await generateNextSemesterEntries(ctx.prisma);
   }),
   teacher: publicProcedure.mutation(async ({ ctx }) => {
     await removeEverything(ctx.prisma);
     await addDefaultValues(ctx.prisma, 'teacher');
-    await generateLastSemesterEntries(ctx.prisma);
+    await generateLastSemesterEntries1(ctx.prisma);
   }),
 
   removeEverything: publicProcedure.mutation(async ({ ctx }) => {
@@ -30,7 +36,10 @@ export const resetRouter = router({
       await addDefaultValues(ctx.prisma, input.role as 'student' | 'teacher');
     }),
 
-  generateLastSemesterEntries: publicProcedure.mutation(async ({ ctx }) => {
-    await generateLastSemesterEntries(ctx.prisma);
+  generateLastSemesterEntries1: publicProcedure.mutation(async ({ ctx }) => {
+    await generateLastSemesterEntries1(ctx.prisma);
+  }),
+  generateLastSemesterEntries2: publicProcedure.mutation(async ({ ctx }) => {
+    await generateLastSemesterEntries2(ctx.prisma);
   }),
 });

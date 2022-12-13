@@ -37,6 +37,264 @@ export const addDefaultValues = async (prisma: typeof prismaClient, defaultRole:
   }
 };
 
+export const generateLastSemesterEntries2 = async (prisma: typeof prismaClient) => {
+  const badges = await prisma!.planBadge.findMany()!;
+  const subjects = await prisma!.subject.findMany()!;
+
+  const referenceMaterials = {
+    deutsch: {
+      oneNote: '6ca743df-1bca-4197-8702-d884bbcf3129',
+    },
+    physik: {
+      oneNote: '67705d1f-7802-470c-a74c-a3fdb29a47e3',
+      aufgabenSammlung: '7afe6bcc-87da-4654-b5f2-6bb167bab259',
+      formelSammlung: 'e90a1226-76b1-4bcf-8b87-fcb0a1c5cbc3',
+    },
+    mathematik: {
+      unterlagen: 'af28eaf7-daa1-41f2-82ec-6d4d2665e731',
+    },
+    wr: {
+      kaufvertrag: 'bf1ea892-1ab2-4f42-bb7a-6bd890f45413',
+    },
+  };
+
+  const mathematik = subjects.find((x) => x.routeName === 'mathematik');
+  await prisma!.plan.create({
+    data: {
+      subjectId: mathematik!.id,
+      startTime: 12 * 60 + 40,
+      endTime: 15 * 60 + 5,
+      day: 2,
+      semesterId: '2022-02',
+      referenceMaterials: {
+        create: [
+          {
+            id: referenceMaterials.mathematik.unterlagen,
+            name: 'Unterlagen',
+            link: 'https://gibbch-my.sharepoint.com/personal/rentsch_gibb_ch/_layouts/15/onedrive.aspx?e=5%3Acfa1a84653c040aabeef11a824e8e1a4&at=9&id=%2Fpersonal%2Frentsch%5Fgibb%5Fch%2FDocuments%2F%5FKlassen%2FBM1TALS%2DI2019b%2FUnterlagen&FolderCTID=0x012000937DC35937C7B445B06CDE80354C3C75',
+          },
+        ],
+      },
+      items: {
+        create: [
+          {
+            date: new Date('2022-08-16'),
+            title: 'Exp.- und Log.-funktionen',
+          },
+          {
+            date: new Date('2022-08-23'),
+            title: 'Exp.- und Log.-funktionen',
+          },
+          {
+            date: new Date('2022-08-30'),
+            title: 'Potenz- und Wurzelfunktionen',
+          },
+          {
+            date: new Date('2022-09-06'),
+            title: 'Potenz- und Wurzelfunktionen',
+            badges: {
+              create: {
+                evaluated: true,
+                badgeId: badges.find((x) => x.name === 'exam')!.id,
+              },
+            },
+          },
+          {
+            date: new Date('2022-09-13'),
+            title: 'Polynomfunktionen',
+          },
+          {
+            date: new Date('2022-09-20'),
+            title: 'Polynomfunktionen',
+          },
+          {
+            date: new Date('2022-10-18'),
+            title: 'Vektoren II',
+            badges: {
+              create: {
+                evaluated: true,
+                badgeId: badges.find((x) => x.name === 'exam')!.id,
+              },
+            },
+          },
+          {
+            date: new Date('2022-10-25'),
+            title: 'Vektoren II',
+          },
+          {
+            date: new Date('2022-11-01'),
+            title: 'Vektoren II',
+          },
+          {
+            date: new Date('2022-11-08'),
+            title: 'Vektoren II',
+          },
+          {
+            date: new Date('2022-11-15'),
+            title: 'Vektoren II',
+          },
+          {
+            date: new Date('2022-11-22'),
+            title: 'Vektoren II',
+          },
+          {
+            date: new Date('2022-11-29'),
+            title: 'Vektoren II',
+          },
+          {
+            date: new Date('2022-12-06'),
+            title: 'Vektoren II',
+            badges: {
+              create: {
+                evaluated: true,
+                badgeId: badges.find((x) => x.name === 'exam')!.id,
+              },
+            },
+          },
+          {
+            date: new Date('2022-12-13'),
+            title: 'Vektoren II',
+          },
+          {
+            date: new Date('2022-12-20'),
+            title: 'Vektoren II',
+          },
+          {
+            date: new Date('2023-01-10'),
+            title: 'Stereometrie',
+            badges: {
+              create: {
+                badgeId: badges.find((x) => x.name === 'exam')!.id,
+                evaluated: true,
+              },
+            },
+          },
+          {
+            date: new Date('2023-01-17'),
+            title: 'Stereometrie',
+          },
+          {
+            date: new Date('2023-01-24'),
+            title: 'Stereometrie',
+          },
+        ],
+      },
+    },
+  });
+
+  const wr = subjects.find((x) => x.routeName === 'wirtschaft-recht');
+  await prisma!.plan.create({
+    data: {
+      subjectId: wr!.id,
+      startTime: 15 * 60 + 20,
+      endTime: 16 * 60 + 50,
+      day: 2,
+      semesterId: '2022-02',
+      referenceMaterials: {
+        create: [
+          {
+            id: referenceMaterials.wr.kaufvertrag,
+            name: 'Kaufvertrag',
+            link: 'https://gibbch-my.sharepoint.com/:w:/g/personal/kuenzle_gibb_ch/ESUfOcpzzi5EoaisjCwUxuUB6Yeh1R8AzyTCHD9osKGM9w?e=B8YTb1',
+          },
+        ],
+      },
+      items: {
+        create: [
+          {
+            date: new Date('2022-08-16'),
+            title: 'IDPA',
+          },
+          {
+            date: new Date('2022-08-23'),
+            title: 'Arbeitsrecht',
+          },
+          {
+            date: new Date('2022-08-30'),
+            title: 'Arbeitsrecht',
+          },
+          {
+            date: new Date('2022-09-06'),
+            title: 'IDPA',
+          },
+          {
+            date: new Date('2022-09-13'),
+            title: 'Arbeitsrecht',
+          },
+          {
+            date: new Date('2022-09-20'),
+            title: 'Arbeitsrecht',
+            badges: {
+              create: {
+                evaluated: true,
+                badgeId: badges.find((x) => x.name === 'exam')!.id,
+              },
+            },
+          },
+          {
+            date: new Date('2022-10-18'),
+            title: 'Kaufvertrag',
+          },
+          {
+            date: new Date('2022-10-25'),
+            title: 'IDPA',
+          },
+          {
+            date: new Date('2022-11-01'),
+            title: 'Kaufvertrag',
+          },
+          {
+            date: new Date('2022-11-08'),
+            title: 'IDPA',
+          },
+          {
+            date: new Date('2022-11-15'),
+            title: 'Kaufvertrag',
+          },
+          {
+            date: new Date('2022-11-22'),
+            title: 'IDPA',
+          },
+          {
+            date: new Date('2022-11-29'),
+            title: 'IDPA',
+          },
+          {
+            date: new Date('2022-12-06'),
+            title: 'Kaufvertrag',
+          },
+          {
+            date: new Date('2022-12-13'),
+            title: 'Kaufvertrag',
+            badges: {
+              create: {
+                evaluated: true,
+                badgeId: badges.find((x) => x.name === 'exam')!.id,
+              },
+            },
+          },
+          {
+            date: new Date('2022-12-20'),
+            title: 'IDPA',
+          },
+          {
+            date: new Date('2023-01-10'),
+            title: 'IDPA',
+          },
+          {
+            date: new Date('2023-01-17'),
+            title: 'IDPA',
+          },
+          {
+            date: new Date('2023-01-24'),
+            title: 'IDPA',
+          },
+        ],
+      },
+    },
+  });
+};
+
 export const generateLastSemesterEntries = async (prisma: typeof prismaClient) => {
   const badges = await prisma!.planBadge.findMany()!;
   const subjects = await prisma!.subject.findMany()!;
@@ -316,242 +574,6 @@ export const generateLastSemesterEntries = async (prisma: typeof prismaClient) =
           {
             date: new Date('2023-01-24'),
             title: 'Energieformen',
-          },
-        ],
-      },
-    },
-  });
-
-  const mathematik = subjects.find((x) => x.routeName === 'mathematik');
-  await prisma!.plan.create({
-    data: {
-      subjectId: mathematik!.id,
-      startTime: 12 * 60 + 40,
-      endTime: 15 * 60 + 5,
-      day: 2,
-      semesterId: '2022-02',
-      referenceMaterials: {
-        create: [
-          {
-            id: referenceMaterials.mathematik.unterlagen,
-            name: 'Unterlagen',
-            link: 'https://gibbch-my.sharepoint.com/personal/rentsch_gibb_ch/_layouts/15/onedrive.aspx?e=5%3Acfa1a84653c040aabeef11a824e8e1a4&at=9&id=%2Fpersonal%2Frentsch%5Fgibb%5Fch%2FDocuments%2F%5FKlassen%2FBM1TALS%2DI2019b%2FUnterlagen&FolderCTID=0x012000937DC35937C7B445B06CDE80354C3C75',
-          },
-        ],
-      },
-      items: {
-        create: [
-          {
-            date: new Date('2022-08-16'),
-            title: 'Exp.- und Log.-funktionen',
-          },
-          {
-            date: new Date('2022-08-23'),
-            title: 'Exp.- und Log.-funktionen',
-          },
-          {
-            date: new Date('2022-08-30'),
-            title: 'Potenz- und Wurzelfunktionen',
-          },
-          {
-            date: new Date('2022-09-06'),
-            title: 'Potenz- und Wurzelfunktionen',
-            badges: {
-              create: {
-                evaluated: true,
-                badgeId: badges.find((x) => x.name === 'exam')!.id,
-              },
-            },
-          },
-          {
-            date: new Date('2022-09-13'),
-            title: 'Polynomfunktionen',
-          },
-          {
-            date: new Date('2022-09-20'),
-            title: 'Polynomfunktionen',
-          },
-          {
-            date: new Date('2022-10-18'),
-            title: 'Vektoren II',
-            badges: {
-              create: {
-                evaluated: true,
-                badgeId: badges.find((x) => x.name === 'exam')!.id,
-              },
-            },
-          },
-          {
-            date: new Date('2022-10-25'),
-            title: 'Vektoren II',
-          },
-          {
-            date: new Date('2022-11-01'),
-            title: 'Vektoren II',
-          },
-          {
-            date: new Date('2022-11-08'),
-            title: 'Vektoren II',
-          },
-          {
-            date: new Date('2022-11-15'),
-            title: 'Vektoren II',
-          },
-          {
-            date: new Date('2022-11-22'),
-            title: 'Vektoren II',
-          },
-          {
-            date: new Date('2022-11-29'),
-            title: 'Vektoren II',
-          },
-          {
-            date: new Date('2022-12-06'),
-            title: 'Vektoren II',
-            badges: {
-              create: {
-                evaluated: true,
-                badgeId: badges.find((x) => x.name === 'exam')!.id,
-              },
-            },
-          },
-          {
-            date: new Date('2022-12-13'),
-            title: 'Vektoren II',
-          },
-          {
-            date: new Date('2022-12-20'),
-            title: 'Vektoren II',
-          },
-          {
-            date: new Date('2023-01-10'),
-            title: 'Stereometrie',
-            badges: {
-              create: {
-                badgeId: badges.find((x) => x.name === 'exam')!.id,
-                evaluated: true,
-              },
-            },
-          },
-          {
-            date: new Date('2023-01-17'),
-            title: 'Stereometrie',
-          },
-          {
-            date: new Date('2023-01-24'),
-            title: 'Stereometrie',
-          },
-        ],
-      },
-    },
-  });
-
-  const wr = subjects.find((x) => x.routeName === 'wirtschaft-recht');
-  await prisma!.plan.create({
-    data: {
-      subjectId: wr!.id,
-      startTime: 15 * 60 + 20,
-      endTime: 16 * 60 + 50,
-      day: 2,
-      semesterId: '2022-02',
-      referenceMaterials: {
-        create: [
-          {
-            id: referenceMaterials.wr.kaufvertrag,
-            name: 'Kaufvertrag',
-            link: 'https://gibbch-my.sharepoint.com/:w:/g/personal/kuenzle_gibb_ch/ESUfOcpzzi5EoaisjCwUxuUB6Yeh1R8AzyTCHD9osKGM9w?e=B8YTb1',
-          },
-        ],
-      },
-      items: {
-        create: [
-          {
-            date: new Date('2022-08-16'),
-            title: 'IDPA',
-          },
-          {
-            date: new Date('2022-08-23'),
-            title: 'Arbeitsrecht',
-          },
-          {
-            date: new Date('2022-08-30'),
-            title: 'Arbeitsrecht',
-          },
-          {
-            date: new Date('2022-09-06'),
-            title: 'IDPA',
-          },
-          {
-            date: new Date('2022-09-13'),
-            title: 'Arbeitsrecht',
-          },
-          {
-            date: new Date('2022-09-20'),
-            title: 'Arbeitsrecht',
-            badges: {
-              create: {
-                evaluated: true,
-                badgeId: badges.find((x) => x.name === 'exam')!.id,
-              },
-            },
-          },
-          {
-            date: new Date('2022-10-18'),
-            title: 'Kaufvertrag',
-          },
-          {
-            date: new Date('2022-10-25'),
-            title: 'IDPA',
-          },
-          {
-            date: new Date('2022-11-01'),
-            title: 'Kaufvertrag',
-          },
-          {
-            date: new Date('2022-11-08'),
-            title: 'IDPA',
-          },
-          {
-            date: new Date('2022-11-15'),
-            title: 'Kaufvertrag',
-          },
-          {
-            date: new Date('2022-11-22'),
-            title: 'IDPA',
-          },
-          {
-            date: new Date('2022-11-29'),
-            title: 'IDPA',
-          },
-          {
-            date: new Date('2022-12-06'),
-            title: 'Kaufvertrag',
-          },
-          {
-            date: new Date('2022-12-13'),
-            title: 'Kaufvertrag',
-            badges: {
-              create: {
-                evaluated: true,
-                badgeId: badges.find((x) => x.name === 'exam')!.id,
-              },
-            },
-          },
-          {
-            date: new Date('2022-12-20'),
-            title: 'IDPA',
-          },
-          {
-            date: new Date('2023-01-10'),
-            title: 'IDPA',
-          },
-          {
-            date: new Date('2023-01-17'),
-            title: 'IDPA',
-          },
-          {
-            date: new Date('2023-01-24'),
-            title: 'IDPA',
           },
         ],
       },
