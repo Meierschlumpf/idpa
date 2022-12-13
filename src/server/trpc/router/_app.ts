@@ -6,6 +6,7 @@ import { homeworkRouter } from './homework';
 import { planRouter } from './plan';
 import { planItemRouter } from './planitem';
 import { referenceMaterialRouter } from './referenceMaterial';
+import { resetRouter } from './reset';
 import { semesterRouter } from './semester';
 import { subjectRouter } from './subject';
 import { taskRouter } from './task';
@@ -20,6 +21,7 @@ export const appRouter = router({
   task: taskRouter,
   homework: homeworkRouter,
   assessment: assessmentRouter,
+  reset: resetRouter,
 });
 
 // export type definition of API

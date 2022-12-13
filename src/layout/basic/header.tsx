@@ -1,7 +1,7 @@
-import { ActionIcon, Box, Burger, Button, createStyles, Divider, Group, Header, Paper, Select, Stack, Text, Transition } from '@mantine/core';
+import { ActionIcon, Box, Burger, Button, createStyles, Divider, Group, Header, Paper, Select, Stack, Text, Tooltip, Transition } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { NextLink } from '@mantine/next';
-import { IconArrowLoopRight, IconMoon, IconSchool, IconSun } from '@tabler/icons';
+import { IconArrowLoopRight, IconMoon, IconRefresh, IconSchool, IconSun } from '@tabler/icons';
 import { useRouter } from 'next/router';
 import { useAuthStore } from '../../stores/auth-store';
 import { useThemeStore } from '../../stores/theme-store';
@@ -24,9 +24,14 @@ export const BasicHeader = ({}: BasicHeaderProps) => {
   const [burgerOpened, burger] = useDisclosure(false);
   const { classes } = useStyles();
   const router = useRouter();
+  const { mutateAsync: resetStudentAsync, isLoading: isStudentLoading } = trpc.reset.student.useMutation();
+  const { mutateAsync: resetTeacherAsync, isLoading: isTeacherLoading } = trpc.reset.teacher.useMutation();
 
   const resetData = () => {
-    fetch(`/api/reset/${role}`).then((x) => router.push('/'));
+    const mutateAsync = role === 'student' ? resetStudentAsync : resetTeacherAsync;
+    mutateAsync().then(() => {
+      router.push('/');
+    });
   };
 
   const { mutateAsync } = trpc.activeRole.update.useMutation();
@@ -70,7 +75,9 @@ export const BasicHeader = ({}: BasicHeaderProps) => {
                 <Stack spacing="xs">
                   <Stack spacing={0}>{role === 'student' ? <StudentHeaderNavigation /> : <TeacherHeaderNavigation />}</Stack>
                   <Divider p={0} mx="md" />
-                  <Button onClick={resetData}>Reset Data</Button>
+                  <Button onClick={resetData} loading={isStudentLoading || isTeacherLoading}>
+                    Daten zurücksetzen
+                  </Button>
                   <Select
                     mt={0}
                     m="md"
@@ -90,9 +97,11 @@ export const BasicHeader = ({}: BasicHeaderProps) => {
           </Transition>
 
           <Group>
-            <ActionIcon onClick={resetData}>
-              <IconArrowLoopRight size={16} stroke={1.5} />
-            </ActionIcon>
+            <Tooltip label="Daten zurücksetzen">
+              <ActionIcon color="red" variant="light" onClick={resetData} loading={isStudentLoading || isTeacherLoading}>
+                <IconRefresh size={16} stroke={1.5} />
+              </ActionIcon>
+            </Tooltip>
 
             <Select
               withinPortal

@@ -1,6 +1,7 @@
 import { planBadges, semesters, subjects } from './_mock';
+import { prisma as prismaClient } from '../../../server/db/client';
 
-export const removeEverything = async () => {
+export const removeEverything = async (prisma: typeof prismaClient) => {
   await prisma!.planItemBadge.deleteMany();
   await prisma!.planBadge.deleteMany();
   await prisma!.referenceMaterial.deleteMany();
@@ -13,7 +14,7 @@ export const removeEverything = async () => {
   await prisma!.activeRole.deleteMany();
 };
 
-export const addDefaultValues = async (defaultRole: 'student' | 'teacher') => {
+export const addDefaultValues = async (prisma: typeof prismaClient, defaultRole: 'student' | 'teacher') => {
   await prisma!.activeRole.create({
     data: {
       name: defaultRole,
@@ -36,7 +37,7 @@ export const addDefaultValues = async (defaultRole: 'student' | 'teacher') => {
   }
 };
 
-export const generateLastSemesterEntries = async () => {
+export const generateLastSemesterEntries = async (prisma: typeof prismaClient) => {
   const badges = await prisma!.planBadge.findMany()!;
   const subjects = await prisma!.subject.findMany()!;
 
@@ -558,7 +559,7 @@ export const generateLastSemesterEntries = async () => {
   });
 };
 
-export const generateNextSemesterEntries = async () => {
+export const generateNextSemesterEntries = async (prisma: typeof prismaClient) => {
   const badges = await prisma!.planBadge.findMany()!;
   const subjects = await prisma!.subject.findMany()!;
 
