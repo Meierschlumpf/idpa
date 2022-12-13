@@ -26,11 +26,12 @@ export const BasicHeader = ({}: BasicHeaderProps) => {
   const router = useRouter();
   const { mutateAsync: resetStudentAsync, isLoading: isStudentLoading } = trpc.reset.student.useMutation();
   const { mutateAsync: resetTeacherAsync, isLoading: isTeacherLoading } = trpc.reset.teacher.useMutation();
+  const utils = trpc.useContext();
 
   const resetData = () => {
     const mutateAsync = role === 'student' ? resetStudentAsync : resetTeacherAsync;
     mutateAsync().then(() => {
-      router.push('/');
+      utils.invalidate();
     });
   };
 

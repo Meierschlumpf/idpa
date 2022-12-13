@@ -2,6 +2,8 @@ import { publicProcedure, router } from '../trpc';
 
 export const assessmentRouter = router({
   getForDashboard: publicProcedure.query(async ({ ctx }) => {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     return await ctx.prisma.planItemBadge.findMany({
       include: {
         item: {
@@ -24,7 +26,7 @@ export const assessmentRouter = router({
         ],
         item: {
           date: {
-            gte: new Date(),
+            gte: today,
           },
         },
       },
