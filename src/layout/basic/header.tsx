@@ -1,6 +1,8 @@
-import { ActionIcon, Box, Burger, createStyles, Divider, Group, Header, Paper, Select, Stack, Text, Transition } from '@mantine/core';
+import { ActionIcon, Box, Burger, Button, createStyles, Divider, Group, Header, Paper, Select, Stack, Text, Transition } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconMoon, IconSchool, IconSun } from '@tabler/icons';
+import { NextLink } from '@mantine/next';
+import { IconArrowLoopRight, IconMoon, IconSchool, IconSun } from '@tabler/icons';
+import { useRouter } from 'next/router';
 import { useAuthStore } from '../../stores/auth-store';
 import { useThemeStore } from '../../stores/theme-store';
 import { trpc } from '../../utils/trpc';
@@ -21,6 +23,11 @@ export const BasicHeader = ({}: BasicHeaderProps) => {
   const theme = useThemeStore((x) => x.theme);
   const [burgerOpened, burger] = useDisclosure(false);
   const { classes } = useStyles();
+  const router = useRouter();
+
+  const resetData = () => {
+    fetch(`/api/reset/${role}`).then((x) => router.push('/'));
+  };
 
   const { mutateAsync } = trpc.activeRole.update.useMutation();
 
@@ -43,13 +50,15 @@ export const BasicHeader = ({}: BasicHeaderProps) => {
     <Box>
       <Header height={HEADER_HEIGHT} px="md" className={classes.root}>
         <Group position="apart" sx={{ height: '100%' }} spacing={0}>
-          <Group>
-            <Burger opened={burgerOpened} onClick={burger.toggle} className={classes.burger} />
-            <IconSchool size={30} />
-            <Text weight={500} size={30}>
-              IDPA
-            </Text>
-          </Group>
+          <NextLink href="/">
+            <Group>
+              <Burger opened={burgerOpened} onClick={burger.toggle} className={classes.burger} />
+              <IconSchool size={30} />
+              <Text weight={500} size={30}>
+                IDPA
+              </Text>
+            </Group>
+          </NextLink>
 
           <Group sx={{ height: '100%' }} className={classes.links} spacing={0}>
             {role === 'student' ? <StudentHeaderNavigation /> : <TeacherHeaderNavigation />}
@@ -61,6 +70,7 @@ export const BasicHeader = ({}: BasicHeaderProps) => {
                 <Stack spacing="xs">
                   <Stack spacing={0}>{role === 'student' ? <StudentHeaderNavigation /> : <TeacherHeaderNavigation />}</Stack>
                   <Divider p={0} mx="md" />
+                  <Button onClick={resetData}>Reset Data</Button>
                   <Select
                     mt={0}
                     m="md"
@@ -80,6 +90,10 @@ export const BasicHeader = ({}: BasicHeaderProps) => {
           </Transition>
 
           <Group>
+            <ActionIcon onClick={resetData}>
+              <IconArrowLoopRight size={16} stroke={1.5} />
+            </ActionIcon>
+
             <Select
               withinPortal
               value={role}

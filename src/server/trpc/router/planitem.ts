@@ -84,6 +84,9 @@ export const planItemRouter = router({
       prev.set(curr.id, curr);
       return prev;
     }, new Map<string, PlanBadge>());
+    const now = new Date();
+    const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const hours = now.getHours() * 60 - 15;
     const items = await ctx.prisma.planItem.findMany({
       include: {
         badges: true,
@@ -95,9 +98,23 @@ export const planItemRouter = router({
         date: 'asc',
       },
       where: {
-        date: {
-          gt: new Date(),
-        },
+        OR: [
+          {
+            date: {
+              gte: yesterday,
+            },
+            plan: {
+              endTime: {
+                gte: hours,
+              },
+            },
+          },
+          {
+            date: {
+              gte: new Date(),
+            },
+          },
+        ],
       },
       take: 8,
     });
